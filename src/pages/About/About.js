@@ -1,5 +1,4 @@
 import withRoot from '../../components/withRoot';
-// --- Post bootstrap -----
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -9,8 +8,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 
-// import aboutImage from "../../styles/images/macbook.jpg";
-// import valuesImage from "../../styles/images/passion.jpg";
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
 
