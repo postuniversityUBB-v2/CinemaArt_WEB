@@ -4,9 +4,14 @@ import Login from '../pages/Login/Login';
 import Register from '../pages/Register/Register';
 import Terms from "../pages/Terms/Terms";
 import Privacy from "../pages/Privacy/Privacy";
-import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import About from "../pages/About/About";
 import ListProjects from '../pages/Project/ListProjects';
+import CreateProject from '../pages/Project/CreateProject';
+import EditProject from '../pages/Project/EditProject';
+// import ListTasks from '../pages/Task/ListTasks';
+// import CreateTask from '../pages/Task/CreateTask';
+// import EditTask from '../pages/Task/EditTask';
+import ListUsers from '../pages/User/ListUsers';
 
 const exactRoutes = (path, component) => ({
     path,
@@ -27,9 +32,14 @@ const baseRoutes = [
     exactRoutes("/register", Register),
     exactRoutes("/terms", Terms),
     exactRoutes("/privacy", Privacy),
-    exactRoutes("/forgot-password", ForgotPassword),
     exactRoutes("/about", About),
     exactRoutes("/project/list", ListProjects),
+    exactRoutes("/project/create", CreateProject),
+    exactRoutes("/project/edit", EditProject),
+    // exactRoutes("/task/list", ListTasks),
+    // exactRoutes("/task/create", CreateTask),
+    // exactRoutes("/task/edit",EditTask),
+    exactRoutes("/user/list", ListUsers),
 ];
 
 const redirects = [
