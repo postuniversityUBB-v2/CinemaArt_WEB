@@ -49,6 +49,10 @@ const styles = (theme) => ({
     button: {
         marginTop: theme.spacing(8),
         backgroundColor: theme.palette.warning.light,
+        marginRight: theme.spacing(1),
+        '&:hover': {
+            backgroundColor: theme.palette.warning.dark,
+        },
     },
 });
 

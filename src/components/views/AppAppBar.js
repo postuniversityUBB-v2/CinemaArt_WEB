@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState }  from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(3),
     },
     linkSecondary: {
-        color: theme.palette.secondary.main,
+        color: theme.palette.warning.dark,
     },
     root: {
         display: 'flex',
@@ -116,7 +116,8 @@ function AppAppBar(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-  
+	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
     const handleDrawerOpen = () => {
       setOpen(true);
     };
@@ -135,18 +136,17 @@ function AppAppBar(props) {
                 })}
             >
                 <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    {/* <Typography variant="h6" noWrap>
-                        Persistent drawer
-                    </Typography> */}
+                    {user && (
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            className={clsx(classes.menuButton, open && classes.hide)}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    )}
 
                     <div className={classes.left} />
                     <Link
@@ -159,71 +159,107 @@ function AppAppBar(props) {
                         {'ebs software'}
                     </Link>
                     <div className={classes.right}>
-                        <Link
-                            color="inherit"
-                            variant="h6"
-                            underline="none"
-                            className={classes.rightLink}
-                            href="/login"
-                        >
-                            {'Sign In'}
-                        </Link>
-                        <Link
-                            variant="h6"
-                            underline="none"
-                            className={clsx(classes.rightLink, classes.linkSecondary)}
-                            href="/register"
-                        >
-                            {'Sign Up'}
-                        </Link>
+                    {user ? (  
+                        <>
+                            <Link
+                                color="inherit"
+                                variant="h6"
+                                underline="none"
+                                className={classes.rightLink}
+                                href="/home/index"
+                            >
+                                {'Dashboard'}
+                            </Link>                          
+                            <Link
+                                    variant="h6"
+                                    underline="none"
+                                    className={clsx(classes.rightLink, classes.linkSecondary)}
+                                    href="/logout"
+                                >
+                                    {'Logout'}
+                            </Link>
+                        </>
+                    )
+                    : (
+                        <>
+                            <Link
+                                color="inherit"
+                                variant="h6"
+                                underline="none"
+                                className={classes.rightLink}
+                                href="/home/index"
+                            >
+                                {'Dashboard'}
+                            </Link>
+                            <Link
+                                color="inherit"
+                                variant="h6"
+                                underline="none"
+                                className={classes.rightLink}
+                                href="/login"
+                            >
+                                {'Sign In'}
+                            </Link>
+                            <Link
+                                variant="h6"
+                                underline="none"
+                                className={clsx(classes.rightLink, classes.linkSecondary)}
+                                href="/register"
+                            >
+                                {'Sign Up'}
+                            </Link>
+                        </>
+                    )}
                     </div>
                 </Toolbar>
             </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="persistent"
-                anchor="left"
-                open={open}
-                classes={{
-                paper: classes.drawerPaper,
-                }}
-            >
-                <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button  component="a" href="/home/index">
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Dashboard"/>
-                    </ListItem>
-                </List>
-                <Divider />
-                <List>
-                    <ListItem button component="a" href="/project/list">
-                        <ListItemIcon>
-                            <AccountTreeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Projects"/>
-                    </ListItem>
-                    <ListItem button component="a" href="/user/list">
-                        <ListItemIcon>
-                            <PeopleAltIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Users" />
-                    </ListItem>
-                    <ListItem button component="a" href="/statistics/chart">
-                        <ListItemIcon>
-                            <EqualizerIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Statistics" />
-                    </ListItem>
-                </List>
-            </Drawer>
+            {user &&
+                <Drawer
+                    className={classes.drawer}
+                    variant="persistent"
+                    anchor="left"
+                    open={open}
+                    classes={{
+                    paper: classes.drawerPaper,
+                    }}
+                >
+                    <div className={classes.drawerHeader}>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                        </IconButton>
+                    </div>
+                    <Divider />
+                    <List>
+                        <ListItem button  component="a" href="/home/index">
+                            <ListItemIcon>
+                                <HomeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Dashboard"/>
+                        </ListItem>
+                    </List>
+                    <Divider />
+                    <List>
+                        <ListItem button component="a" href="/project/list">
+                            <ListItemIcon>
+                                <AccountTreeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Projects"/>
+                        </ListItem>
+                        <ListItem button component="a" href="/user/list">
+                            <ListItemIcon>
+                                <PeopleAltIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Users" />
+                        </ListItem>
+                        <ListItem button component="a" href="/statistics/chart">
+                            <ListItemIcon>
+                                <EqualizerIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Statistics" />
+                        </ListItem>
+                    </List>
+                </Drawer>
+            }
             <div className={classes.placeholder} />
         </div>
     );
