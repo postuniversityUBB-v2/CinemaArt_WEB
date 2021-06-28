@@ -6,6 +6,7 @@ import Container from '@material-ui/core/Container';
 
 const styles = (theme) => ({
     root: {
+        backgroundColor: theme.palette.secondary.light,
         color: theme.palette.common.white,
         position: 'relative',
         display: 'flex',
@@ -17,8 +18,8 @@ const styles = (theme) => ({
         },
     },
     container: {
-        marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(14),
+        // marginTop: theme.spacing(3),
+        // marginBottom: theme.spacing(14),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -33,16 +34,17 @@ const styles = (theme) => ({
         opacity: 0.5,
         zIndex: -1,
     },
-    background: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        zIndex: -2,
-    },
+    // background: {
+    //     position: 'absolute',
+    //     left: 0,
+    //     right: 0,
+    //     top: 0,
+    //     bottom: 0,
+    //     backgroundColor: theme.palette.secondary.light,
+    //     backgroundSize: 'cover',
+    //     backgroundRepeat: 'no-repeat',
+    //     zIndex: -2,
+    // },
     arrowDown: {
         position: 'absolute',
         bottom: theme.spacing(4),
@@ -55,12 +57,12 @@ function ProductHeroLayout(props) {
     return (
         <section className={classes.root}>
             <Container className={classes.container}>
-                <img
+                {/* <img
                     src="/style/images/productHeroWonder.png"
                     alt="wonder"
                     width="147"
                     height="80"
-                />
+                /> */}
                 {children}
                 <div className={classes.backdrop} />
                 <div className={clsx(classes.background, backgroundClassName)} />

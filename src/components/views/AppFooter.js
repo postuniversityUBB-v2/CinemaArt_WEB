@@ -11,7 +11,7 @@ function Copyright() {
         <React.Fragment>
             {'© '}
             <Link color="inherit" href="https://material-ui.com/">
-                Your Website
+                EBS SOFTWARE
             </Link>{' '}
             {new Date().getFullYear()}
         </React.Fragment>
@@ -65,10 +65,6 @@ const LANGUAGES = [
     {
         code: 'en-US',
         name: 'English',
-    },
-    {
-        code: 'fr-FR',
-        name: 'Français',
     },
 ];
 
@@ -135,9 +131,9 @@ export default function AppFooter() {
                         <Typography variant="caption">
                             {'Made by '}
                             <Link href="https://www.freepik.com" rel="sponsored" title="Freepik">
-                                Oana Ujica
+                                Team 1,
                             </Link>
-                            {' student at '}
+                            {' students at '}
                             <Link href="https://www.flaticon.com" rel="sponsored" title="Flaticon">
                                 Postgraduate training programme
                             </Link>
@@ -148,7 +144,7 @@ export default function AppFooter() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                Computer Science at Faculty of Mathematics and Computer Science
+                                Computer Science at Faculty of Mathematics and Computer Science, UBB Cluj-Napoca
                             </Link>
                         </Typography>
                     </Grid>

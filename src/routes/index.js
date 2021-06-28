@@ -4,6 +4,7 @@ import Register from '../pages/Register/Register';
 import Terms from "../pages/Terms/Terms";
 import Privacy from "../pages/Privacy/Privacy";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
+import About from "../pages/About/About";
 
 const exactRoutes = (path, component) => ({
     path,
@@ -24,6 +25,7 @@ const baseRoutes = [
     exactRoutes("/terms", Terms),
     exactRoutes("/privacy", Privacy),
     exactRoutes("/forgot-password", ForgotPassword),
+    exactRoutes("/about", About),
 ];
 
 const redirects = [

@@ -57,11 +57,11 @@ function ProductValues(props) {
                                 alt="suitcase"
                             />
                             <Typography variant="h6" className={classes.title}>
-                                The best luxury hotels
+                                The best software tool
                             </Typography>
                             <Typography variant="h5">
-                                {'From the latest trendy boutique hotel to the iconic palace with XXL pool'}
-                                {', go for a mini-vacation just a few subway stops away from your home.'}
+                                {'Designed for security and scale. '}
+                                {'Sleep soundly with enhanced administration and security.'}
                             </Typography>
                         </div>
                     </Grid>
@@ -76,8 +76,8 @@ function ProductValues(props) {
                                 New experiences
                             </Typography>
                             <Typography variant="h5">
-                                {'Privatize a pool, take a Japanese bath or wake up in 900m2 of garden… '}
-                                {'your Sundays will not be alike.'}
+                                {'Streamline your work with automation. '}
+                                {'Save time, stay focused and work smarter with EBS automation. '}
                             </Typography>
                         </div>
                     </Grid>
@@ -89,11 +89,11 @@ function ProductValues(props) {
                                 alt="clock"
                             />
                             <Typography variant="h6" className={classes.title}>
-                                Exclusive rates
+                                EBS Software Premium
                             </Typography>
                             <Typography variant="h5">
-                                {'By registering, you will access specially negotiated rates '}
-                                {'that you will not find anywhere else.'}
+                                {'Ensure your team and organization are ready to scale with '}
+                                {'24x7 Premium Support, and more.'}
                             </Typography>
                         </div>
                     </Grid>

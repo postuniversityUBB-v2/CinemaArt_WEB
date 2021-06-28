@@ -48,6 +48,7 @@ const styles = (theme) => ({
     },
     button: {
         marginTop: theme.spacing(8),
+        backgroundColor: theme.palette.warning.light,
     },
 });
 
@@ -76,7 +77,7 @@ function ProductHowItWorks(props) {
                                     className={classes.image}
                                 />
                                 <Typography variant="h5" align="center">
-                                    Appointment every Wednesday 9am.
+                                    Register to have access to all team's benefits.
                                 </Typography>
                             </div>
                         </Grid>
@@ -89,7 +90,7 @@ function ProductHowItWorks(props) {
                                     className={classes.image}
                                 />
                                 <Typography variant="h5" align="center">
-                                    First come, first served. Our offers are in limited quantities, so be quick.
+                                    Start creating your first projects or just view team's tasks.
                                 </Typography>
                             </div>
                         </Grid>
@@ -103,14 +104,13 @@ function ProductHowItWorks(props) {
                                 />
                                 <Typography variant="h5" align="center">
                                     {'New offers every week. New experiences, new surprises. '}
-                                    {'Your Sundays will no longer be alike.'}
                                 </Typography>
                             </div>
                         </Grid>
                     </Grid>
                 </div>
+                {/* {user} */}
                 <Button
-                    color="secondary"
                     size="large"
                     variant="contained"
                     className={classes.button}
