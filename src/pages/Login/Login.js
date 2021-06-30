@@ -107,7 +107,6 @@ function Login() {
 							id="username"
 							label="Username"
 							name="username"
-							value={username}
 							autoComplete="username"
 							onChange={e => setUsername(e.target.value)}
 							autoFocus
@@ -118,7 +117,6 @@ function Login() {
 							required
 							fullWidth
 							name="password"
-							value={password}
 							label="Password"
 							type="password"
 							id="password"
