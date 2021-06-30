@@ -5,13 +5,15 @@ import Register from '../pages/Register/Register';
 import Terms from "../pages/Terms/Terms";
 import Privacy from "../pages/Privacy/Privacy";
 import About from "../pages/About/About";
+import Contact from '../pages/Contact/Contact';
 import ListProjects from '../pages/Project/ListProjects';
 import CreateProject from '../pages/Project/CreateProject';
 import EditProject from '../pages/Project/EditProject';
-// import ListTasks from '../pages/Task/ListTasks';
-// import CreateTask from '../pages/Task/CreateTask';
-// import EditTask from '../pages/Task/EditTask';
+import ListTasks from '../pages/Task/ListTasks';
+import CreateTask from '../pages/Task/CreateTask';
+import EditTask from '../pages/Task/EditTask';
 import ListUsers from '../pages/User/ListUsers';
+import Charts from '../pages/Statistics/Charts';
 
 const exactRoutes = (path, component) => ({
     path,
@@ -33,13 +35,15 @@ const baseRoutes = [
     exactRoutes("/terms", Terms),
     exactRoutes("/privacy", Privacy),
     exactRoutes("/about", About),
+    exactRoutes("/contact", Contact),
     exactRoutes("/project/list", ListProjects),
     exactRoutes("/project/create", CreateProject),
     exactRoutes("/project/edit", EditProject),
-    // exactRoutes("/task/list", ListTasks),
-    // exactRoutes("/task/create", CreateTask),
-    // exactRoutes("/task/edit",EditTask),
+    exactRoutes("/task/list", ListTasks),
+    exactRoutes("/task/create", CreateTask),
+    exactRoutes("/task/edit",EditTask),
     exactRoutes("/user/list", ListUsers),
+    exactRoutes("/statistics/chart", Charts),
 ];
 
 const redirects = [
