@@ -6,15 +6,15 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import { v4 as uuidv4 } from "uuid"
 
-import { register } from "../../api/api"
+import { register } from "../../api/api";
 import TypographyCustom from '../../components/components/Typography';
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
 import AppForm from '../../components/views/AppForm';
-import Button from "@material-ui/core/Button"
-import TextField from "@material-ui/core/TextField"
-import Typography from "@material-ui/core/Typography"
-import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core"
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
 	paper: {
@@ -43,12 +43,14 @@ const useStyles = makeStyles(theme => ({
 function SignUp() {
     const classes = useStyles();
     const [sent, setSent] = React.useState(false);
-	const [firstName, setFirstName] = useState("")
-	const [lastName, setLastName] = useState("")
+	// const [firstName, setFirstName] = useState("")
+	// const [lastName, setLastName] = useState("")
 	const [email, setEmail] = useState("")
-	const [username, setUsername] = useState("")
+	// const [username, setUsername] = useState("")
 	const [password, setPassword] = useState("")
-	const [role, setRole] = useState("")
+	const [confirmPassword, setConfirmPassword] = useState("")
+
+	// const [role, setRole] = useState("")
 	const [done, setDone] = useState(false)
     const [error, setError] = useState(false)
     const [user,setUser]= useState(JSON.parse(localStorage.getItem("user")))
@@ -57,14 +59,15 @@ function SignUp() {
 		e.preventDefault()
 		try {
 			const status = await register({
-				userCode: uuidv4(),
-				firstName: firstName,
-				lastName: lastName,
-				username: username,
+				// userCode: uuidv4(),
+				// firstName: firstName,
+				// lastName: lastName,
+				// username: username,
 				email: email,
 				password: password,
-				isAdmin: false,
-				roles: [role],
+				confirmPassword: confirmPassword,
+				// isAdmin: false,
+				// roles: [role],
 			})
 			if (status === 200) {
 				setDone(true)
@@ -108,7 +111,7 @@ function SignUp() {
 					) : (
 						<form className={classes.form} onSubmit={e => sendRegister(e)}>
 							<Grid container spacing={2}>
-								<Grid item xs={12} sm={6}>
+								{/* <Grid item xs={12} sm={6}>
 									<TextField
 										autoComplete="fname"
 										name="firstName"
@@ -132,7 +135,7 @@ function SignUp() {
 										autoComplete="lname"
 										onChange={e => setLastName(e.target.value)}
 									/>
-								</Grid>
+								</Grid> */}
 								<Grid item xs={12}>
 									<TextField
 										variant="outlined"
@@ -145,7 +148,7 @@ function SignUp() {
 										onChange={e => setEmail(e.target.value)}
 									/>
 								</Grid>
-								<Grid item xs={12}>
+								{/* <Grid item xs={12}>
 									<TextField
 										variant="outlined"
 										required
@@ -156,7 +159,7 @@ function SignUp() {
 										autoComplete="username"
 										onChange={e => setUsername(e.target.value)}
 									/>
-								</Grid>
+								</Grid> */}
 								<Grid item xs={12}>
 									<TextField
 										variant="outlined"
@@ -171,6 +174,19 @@ function SignUp() {
 									/>
 								</Grid>
 								<Grid item xs={12}>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										name="confirmPassword"
+										label="Confirm Password"
+										type="password"
+										id="confirmPassword"
+										autoComplete="current-confirm-password"
+										onChange={e => setConfirmPassword(e.target.value)}
+									/>
+								</Grid>
+								{/* <Grid item xs={12}>
 									<FormControl className={classes.select} variant="outlined">
 										<InputLabel id="demo-simple-select-outlined-label">
 											Role
@@ -185,7 +201,7 @@ function SignUp() {
 											<MenuItem value="ROLE_ADMIN">Admin</MenuItem>
 										</Select>
 									</FormControl>
-								</Grid>
+								</Grid> */}
 							</Grid>
 							<Button
 								type="submit"

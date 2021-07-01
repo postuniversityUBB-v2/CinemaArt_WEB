@@ -1,6 +1,7 @@
 import axios from "axios"
 
-const API_URL = "https://ebs-software-v1.herokuapp.com/api"
+// const API_URL = "https://ebs-software-v1.herokuapp.com/api"
+const API_URL = "https://localhost:44303/api"
 const token = localStorage.getItem("token")
 
 export const getProjects = async () => {
@@ -130,9 +131,20 @@ export const getUsers = async () => {
 	}
 }
 
+// export const register = async payload => {
+// 	try {
+// 		const { status } = await axios.post(`${API_URL}/users/register`, payload)
+// 		console.log("🚀 ~ file: api.js ~ line 120 ~ register ~ response", status)
+
+// 		return status
+// 	} catch (err) {
+// 		throw err
+// 	}
+// }
+
 export const register = async payload => {
 	try {
-		const { status } = await axios.post(`${API_URL}/users/register`, payload)
+		const { status } = await axios.post(`${API_URL}/Authentication/register`, payload)
 		console.log("🚀 ~ file: api.js ~ line 120 ~ register ~ response", status)
 
 		return status
@@ -141,9 +153,20 @@ export const register = async payload => {
 	}
 }
 
+// export const login = async payload => {
+// 	try {
+// 		const { data, status } = await axios.post(`${API_URL}/users/login`, payload)
+// 		console.log("🚀 ~ file: api.js ~ line 131 ~ login ~ response", data, status)
+
+// 		return { data, status }
+// 	} catch (err) {
+// 		throw err
+// 	}
+// }
+
 export const login = async payload => {
 	try {
-		const { data, status } = await axios.post(`${API_URL}/users/login`, payload)
+		const { data, status } = await axios.post(`${API_URL}/Authentication/login`, payload)
 		console.log("🚀 ~ file: api.js ~ line 131 ~ login ~ response", data, status)
 
 		return { data, status }

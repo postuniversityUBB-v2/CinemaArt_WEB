@@ -93,32 +93,32 @@ const Banner = (props) => {
 
 const items = [
     {
-        Name: "EBS Software for All Teams",
-        Caption: "Software development tool for teams",
+        Name: "Cinema Art",
+        Caption: "",
         contentPosition: "left",
         Items: [
             {
                 Name: "",
-                Image: '/style/images/doMore.jpg'
+                Image: '/style/images/cinema_7.jpg'
             },
             {
                 Name: "",
-                Image: '/style/images/office-space.jpg'
+                Image: '/style/images/cinema_4.jpg'
             }
         ]
     },
     {
-        Name: "Professional Services",
+        Name: "Cinema Art",
         Caption: "",
         contentPosition: "middle",
         Items: [
             {
                 Name: "",
-                Image: '/style/images/work.jpg'
+                Image: '/style/images/cinema_2.jpg'
             },
             {
                 Name: "",
-                Image: '/style/images/meeting.jpg'
+                Image: '/style/images/cinema_3.jpg'
             }
         ]
     },
@@ -129,11 +129,11 @@ const items = [
         Items: [
             {
                 Name: "",
-                Image: '/style/images/tokyo_2.jpg'
+                Image: '/style/images/popcorn.jpg'
             },
             {
                 Name: "",
-                Image: '/style/images/tokyo_4.jpg'
+                Image: '/style/images/cinema.jpg'
             }
         ]
     }

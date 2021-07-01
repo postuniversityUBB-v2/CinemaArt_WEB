@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(3),
     },
     linkSecondary: {
-        color: theme.palette.warning.dark,
+        color: theme.palette.secondary.main,
     },
     root: {
         display: 'flex',

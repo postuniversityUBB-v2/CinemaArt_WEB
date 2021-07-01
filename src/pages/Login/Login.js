@@ -16,7 +16,7 @@ import TypographyCustom from '../../components/components/Typography';
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
 import AppForm from '../../components/views/AppForm';
-import { login } from "../../api/api"
+import { login } from "../../api/api";
 
 const useStyles = makeStyles((theme) => ({
     // form: {
@@ -50,27 +50,26 @@ const useStyles = makeStyles((theme) => ({
 
 function Login() {
     const classes = useStyles();
-	const [username, setUsername] = useState("")
+	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")))
 	const [done, setDone] = useState(false)
 	const sendLogin = async e => {
 		e.preventDefault()
 		const { data, status } = await login({
-			username: username,
+			email: email,
 			password: password,
 		})
 
-		const items = data.split(",")
-		localStorage.setItem("token", items[3])
+		const token = data.token;
+		localStorage.setItem("token", token)
 		localStorage.setItem(
 			"user",
 			JSON.stringify({
-				username: items[0],
-				firstName: items[1],
-				lastName: items[2],
-				token: items[3],
-				role: items[4],
+				// firstName: items[1],
+				// lastName: items[2],
+				token: token
+				// role: items[4],
 			})
 		)
 		if (status === 200) {
@@ -104,11 +103,11 @@ function Login() {
 							margin="normal"
 							required
 							fullWidth
-							id="username"
-							label="Username"
-							name="username"
-							autoComplete="username"
-							onChange={e => setUsername(e.target.value)}
+							id="email"
+							label="Email"
+							name="email"
+							autoComplete="email"
+							onChange={e => setEmail(e.target.value)}
 							autoFocus
 						/>
 						<TextField
