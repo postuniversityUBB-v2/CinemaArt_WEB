@@ -203,6 +203,7 @@ const CreateProject = () => {
             ...values
         };
         payload.dateAdded = new Date();
+        payload.watched = watched === true ? true : false;
         console.log(payload);
 
         try {

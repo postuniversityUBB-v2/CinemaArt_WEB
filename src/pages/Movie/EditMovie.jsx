@@ -1,27 +1,31 @@
 import withRoot from '../../components/withRoot';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { makeStyles, FormControl, TextField, Grid, Button, RootRef, Backdrop, MenuItem, Typography } from '@material-ui/core';
 import { Dialog, DialogActions, DialogContent, DialogContentText, Slide } from '@material-ui/core';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import 'date-fns';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
-import { editProject } from "../../api/api";
+import { editMovie } from "../../api/api";
+import { MovieRounded } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
         marginRight: theme.spacing(33),
         marginBottom: theme.spacing(14),
-        width: 300,
+        width: 200,
     },
     textField : {
-        width: 380,
+        width: 240,
     },
     keyboardDatePicker: {
-        width: 380,
+        width: 240,
     },
     dialogEditProjectText: {
         color: "black",
@@ -125,35 +129,22 @@ const EditProject = () => {
     const domRef = useRef();
     const classes = useStyles();
 
-    let project = {};
-	if (localStorage && localStorage.getItem('project')) {
-	   project = JSON.parse(localStorage.getItem('project'));
+    let movie = {};
+	if (localStorage && localStorage.getItem('movie')) {
+	   movie = JSON.parse(localStorage.getItem('movie'));
 	}
-
+    
     const SubmitButton = (props) => ( <button {...props} type="submit" />);
 
-    const projectStatuses = [
-        {
-            value: 'dev',
-            label: 'Dev',
-        },
-        {
-            value: 'alpha',
-            label: 'Alpha',
-        },
-        {
-            value: 'beta',
-            label: 'Beta',
-        },
-        {
-            value: 'production',
-            label: 'Production',
-        },
-    ];
-    const [title, setTitle] = useState(project.title);
-    const [projectStatus, setProjectStatus] = useState(project.projectStatus);
-    const [description, setDescription] = useState(project.description);
-    const [deadline, setDeadline] = useState(project.deadline);
+    const movieGenre = ['Action', 'Documentary', 'Biography', 'Comedy', 'Adventure', 'Horror', 'History', 'SciFi', 'Animation', 'Thriller', 'Romance', 'Musical'];
+    const [title, setTitle] = useState(movie.title);
+    const [genre, setGenre] = useState(movie.genre);
+    const [description, setDescription] = useState(movie.description);
+    const [durationInMinutes, setDurationInMinutes] = useState(movie.durationInMinutes);
+    const [yearOfRelease, setYearOfRelease] = useState(movie.yearOfRelease);
+    const [director, setDirector] = useState(movie.director);
+    const [rating, setRating] = useState(movie.rating);
+    const [watched, setWatched] = useState(movie.watched === true ? true : false);
     
     const [openBackToList, isOpenBackToList] = useState(false);
     const [openEditProject, isOpenEditProject] = useState(false);
@@ -178,38 +169,53 @@ const EditProject = () => {
         setDescription(event.target.value);
     };
 
-    const handleChangeProjectStatus = (event) => {
-        setProjectStatus(event.target.value);
-    };
-    
-    const handleDeadline = (date) => {
-        setDeadline(date);
+    const handleChangeGenre = (event) => {
+        setGenre(event.target.value);
     };
 
-    const handleResetDatePickerDeadline = () => {
-        setDeadline(project.deadline);
+    const handleChangeDurationInMinutes = (event) => {
+        setDurationInMinutes(event.target.value);
+    };
+
+    const handleChangeYearOfRelease = (year) => {
+        setYearOfRelease(year);
+    };
+
+    const handleChangeDirector = (event) => {
+        setDirector(event.target.value);
+    };
+
+    const handleChangeRating = (event) => {
+        setRating(event.target.value);
+    };
+
+    const handleChangeWatched = () => {
+        setWatched(!watched);
     };
 
     const handleReset = () => {
-        setTitle(project.title);
-        setProjectStatus(project.projectStatus);
-        setDescription(project.description);
-        setDeadline(handleResetDatePickerDeadline);
+        setTitle(movie.title);
+        setGenre(movie.genre);
+        setDescription(movie.description);
     }
 
     const { register, handleSubmit } = useForm();
     const onSubmit = (values, e) => {
         e.preventDefault();
-        const payload = {
+		const payload = {
+			dateAdded: movie.dateAdded ,
+			description: description,
+            director: director,
+            durationInMinutes: durationInMinutes,
+			genre: genre,
+            rating: rating,
 			title: title,
-			description: description,            
-			projectStatus: projectStatus,
-			deadline: values.deadline ? formatDate(values.deadline) : deadline,
+			yearOfRelease: yearOfRelease,
+            watched: watched === true ? true : false,
 		}
-
         try {
-            editProject(project.projectCode, payload);
-            console.log("🚀 ~ file: EditProject.js ~ line 193");
+            editMovie(movie.id, payload);
+            console.log("🚀 ~ file: EditMovie.js ~ line 193");
             isOpenEditProject(true);
         } catch (err) {
             console.log(err);
@@ -220,7 +226,7 @@ const EditProject = () => {
         <React.Fragment>
             <AppAppBar />
                 <div className="createEntity">
-                    <Typography variant="h4" className={classes.title}>Edit {project.title}</Typography>
+                    <Typography variant="h4" className={classes.title}>Edit {movie.title}</Typography>
                     <RootRef rootRef={domRef}>
                         <form onSubmit={handleSubmit(onSubmit)} autocomplete="off" noValidate>
                             <FormControl id="titleForm" className={classes.formControl}>
@@ -238,24 +244,24 @@ const EditProject = () => {
                                 />
                             </FormControl>
 
-                            <FormControl id="projectStatusForm" className={classes.formControl}>                    
+                            <FormControl id="genreForm" className={classes.formControl}>                    
                                 <TextField
-                                    id="projectStatus"
+                                    id="genre"
                                     type="text"
-                                    name="projectStatus"
-                                    {...register("projectStatus")}
+                                    name="genre"
+                                    {...register("genre")}
                                     select
-                                    label="Project Status"
-                                    value={projectStatus}
-                                    onChange={handleChangeProjectStatus}    
+                                    label="Genre"
+                                    value={genre}
+                                    onChange={handleChangeGenre}    
                                     className={classes.textField}                    
-                                    placeholder="Project Status"
+                                    placeholder="Genre"
                                     InputLabelProps={{shrink: true,}}
-                                    inputProps={{ "data-testid": "projectStatus" }}
+                                    inputProps={{ "data-testid": "genre" }}
                                 >
-                                    {projectStatuses.map((status, index) => (
-                                        <MenuItem key={index} value={status.value}>
-                                            {status.label}
+                                    {movieGenre.map((genre, index) => (
+                                        <MenuItem key={index} value={genre}>
+                                            {genre}
                                         </MenuItem>
                                     ))}
                                 </TextField>
@@ -278,25 +284,85 @@ const EditProject = () => {
                                 />
                             </FormControl>
 
+                            <TextField
+                                id="durationInMinutes"
+                                name="durationInMinutes"
+                                label="Duration in Minutes"
+                                value={durationInMinutes}
+                                {...register("durationInMinutes")}
+                                onChange={handleChangeDurationInMinutes}
+                                inputProps={{ min: "1", max: "600", step: "1" }}
+                                placeholder="Duration in Minutes"
+                                type="number"
+                                InputLabelProps={{shrink: true,}}
+                            />
+
+                            <FormControl id="directorForm" className={classes.formControl}>
+                                <TextField
+                                    id="director"
+                                    type="text"
+                                    name="director"
+                                    value={director}
+                                    {...register("director")}
+                                    onChange={handleChangeDirector}
+                                    className={classes.textField}
+                                    label="Director"
+                                    placeholder="Director"
+                                    InputLabelProps={{shrink: true,}}
+                                />
+                            </FormControl>
+
+                            <FormControl className={classes.formControl}>                            
+                                <TextField
+                                    id="rating"
+                                    name="rating"
+                                    label="Rating"
+                                    value={rating}
+                                    {...register("rating")}
+                                    onChange={handleChangeRating}
+                                    inputProps={{ min: "1", max: "10", step: "0.1" }}
+                                    placeholder="Rating"
+                                    type="number"
+                                    InputLabelProps={{shrink: true,}}
+                                />
+                            </FormControl>
+
                             <FormControl className={classes.formControl}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <DatePicker
-                                        id="deadline"
-                                        name="deadline"
-                                        value={deadline}
-                                        {...register("deadline")}
-                                        onChange={date => handleDeadline(date)}
+                                        id="yearOfRelease"
+                                        name="yearOfRelease"
+                                        value={yearOfRelease}
+                                        views={['year']}
+                                        {...register("yearOfRelease")}
+                                        onChange={date => handleChangeYearOfRelease(date)}
                                         className={classes.keyboardDatePicker}
-                                        format="dd/MM/yyyy"
+                                        format="yyyy"
                                         KeyboardButtonProps={{
-                                            'aria-label': 'deadline',
+                                            'aria-label': 'yearOfRelease',
                                         }}
-                                        label="Deadline"
-                                        placeholder="Deadline   dd/mm/yyyy"
+                                        label="Year of Release"
+                                        placeholder="Year of Release   yyyy"
                                         InputLabelProps={{shrink: true,}}
                                         autoOk={true}
+                                        inputProps={{ "data-testid": "yearOfRelease" }}
                                     />
                                 </MuiPickersUtilsProvider>
+                            </FormControl>
+
+                            <FormControl component="fieldset">
+                                <FormGroup aria-label="position" row>
+                                    <FormControlLabel
+                                        id="watched"
+                                        className={classes.watched}
+                                        name="watched"
+                                        value={watched}
+                                        {...register("watched")}
+                                        control={<Checkbox color="secondary" checked={watched} onChange={handleChangeWatched}/>}
+                                        label="Watched"
+                                        labelPlacement="end"
+                                    />
+                                </FormGroup>
                             </FormControl>
 
                             <Grid container spacing={1}>
@@ -311,19 +377,19 @@ const EditProject = () => {
                                         size="large"
                                         href="#"
                                     >
-                                        Edit Project
+                                        Edit Movie
                                     </Button>
                                     <Backdrop open={openEditProject} onClose={handleCloseEditProject} elevation={18}>
                                         <Dialog
                                             open={openEditProject}
                                             TransitionComponent={TransitionEditProject}
                                             keepMounted
-                                            aria-describedby="Project edited!"
+                                            aria-describedby="Movie edited!"
                                             disableBackdropClick
                                         >
                                             <DialogContent>
                                                 <DialogContentText id="alertDialogDescriptionEditProject" className={classes.dialogEditProjectText}>
-                                                    Project successfully edited!
+                                                    Movie successfully edited!
                                                 </DialogContentText>
                                             </DialogContent>
                                             <DialogActions>
@@ -337,7 +403,7 @@ const EditProject = () => {
                                                                     }}
                                                                     color="primary"
                                                             >
-                                                                Edit project
+                                                                Edit movie
                                                             </Button>
                                                         </Grid>
                                                         <Grid container item xs={6} justify="center">

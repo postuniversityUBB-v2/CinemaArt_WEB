@@ -144,7 +144,7 @@ export default function AppFooter() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                Computer Science at Faculty of Mathematics and Computer Science, UBB Cluj-Napoca
+                                Computer Science, UBB Cluj-Napoca
                             </Link>
                         </Typography>
                     </Grid>

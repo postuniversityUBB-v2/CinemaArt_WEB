@@ -26,10 +26,11 @@ import {
 import AssignmentIcon from "@material-ui/icons/Assignment"
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import RateReviewIcon from '@material-ui/icons/RateReview';
 
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
-import { getMovies, deleteProject } from "../../api/api"
+import { getMovies, deleteMovie } from "../../api/api"
 import LoadingSpinner from "../../components/components/LoadingSpinner"
 
 const tableIcons = {
@@ -89,7 +90,7 @@ const ListMovies = () => {
 
     const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [totalEntities, setTotalEntities] = React.useState(0);
+    const [totalEntities, setTotalEntities] = React.useState(data.totalEntities);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -100,29 +101,29 @@ const ListMovies = () => {
         setPage(1);
     };
 
-	const handleRedirectTasks = rowData => {
-		localStorage.setItem('project', JSON.stringify(rowData));
+	const handleRedirectToReviews = rowData => {
+		localStorage.setItem('movie', JSON.stringify(rowData));
 
 		history.push({
-			pathname: "/task/list",
-			search: `?project=${rowData.title}`
+			pathname: "/review/list",
+			search: `?movie=${rowData.title}`
 		})
 	}
 
-	const handleRedirectToEditProject = rowData => {		
-		localStorage.setItem('project', JSON.stringify(rowData));
+	const handleRedirectToEditMovie = rowData => {		
+		localStorage.setItem('movie', JSON.stringify(rowData));
 
 		history.push({
-			pathname: "/project/edit",
-			search: `?project=${rowData.title}`,
+			pathname: "/movie/edit",
+			search: `?movie=${rowData.title}`,
 		})
 	}
 	
-	const handleDeleteProject = rowData => {
+	const handleDeleteMovie = rowData => {
 		const fetchData = async () => {
 			try {
-				await deleteProject(rowData.projectCode)
-				console.log("🚀 ~ file: ListProjects.js ~ line 69 ~ data")
+				await deleteMovie(rowData.id)
+				console.log("🚀 ~ file: DeleteMovie.js ~ line 69 ~ data")
 				window.location.reload();
 			} catch (err) {
 				console.log(err)
@@ -173,11 +174,11 @@ const ListMovies = () => {
                                                 TransitionComponent={Fade}
                                                 TransitionProps={{ timeout: 600 }}
                                                 placement="top"
-                                                aria-label="create new project"
+                                                aria-label="create new movie"
                                             >
                                                 <Fab
                                                     id="buttonToCreateProject"
-                                                    aria-label="add new project"
+                                                    aria-label="add new movie"
                                                     href="/movie/create"
                                                     className={classes.createProject}
                                                 >
@@ -200,7 +201,7 @@ const ListMovies = () => {
                                     render: rowData => (
                                         <div className={table.name}>{rowData.title}</div>
                                     ),
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
                                     defaultSort: "asc",
                                     customSort: (a, b) => a?.title?.localeCompare(b?.title),
@@ -211,7 +212,7 @@ const ListMovies = () => {
                                     render: rowData => (
                                         <div className={table.name}>{rowData.yearOfRelease}</div>
                                     ),
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
@@ -220,7 +221,7 @@ const ListMovies = () => {
                                     render: rowData => (
                                         <div className={table.name}>{rowData.genre}</div>
                                     ),
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
@@ -229,72 +230,72 @@ const ListMovies = () => {
                                     render: rowData => (
                                         <div className={table.name}>{rowData.description}</div>
                                     ),
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
                                     title: "Director",
                                     field: "director",
                                     render: rowData => rowData.director,
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
                                     title: "Date Added",
                                     field: "dateAdded",
                                     render: rowData => formattedDate(rowData.dateAdded),
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
-                                    customFilterAndSearch: (searchValue, rowData) => handleSearchDate(searchValue, rowData.dateAdded)
+                                    // customFilterAndSearch: (searchValue, rowData) => handleSearchDate(searchValue, rowData.dateAdded)
                                 },
                                 {
                                     title: "Duration",
                                     field: "durationInMinutes",
                                     render: rowData => rowData.durationInMinutes,
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
                                     title: "Rating",
                                     field: "rating",
                                     render: rowData => rowData.rating,
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
                                     title: "Watched",
                                     field: "watched",
                                     render: rowData => rowData.watched ? "Yes" : "No",
-                                    searchable: true,
+                                    // searchable: true,
                                     sortable: true,
                                 },
                             ]}
                             data={data}
                             actions={ user?.role === "Admin" ? [
                                 {
-                                    icon: () => <AssignmentIcon />,
-                                    tooltip: "View tasks",
-                                    onClick: (event, rowData) => handleRedirectTasks(rowData),
+                                    icon: () => <RateReviewIcon />,
+                                    tooltip: "View reviews",
+                                    onClick: (event, rowData) => handleRedirectToReviews(rowData),
                                 },
                                 {
                                     icon: () => <DeleteIcon />,
-                                    tooltip: 'Delete Project',
-                                    onClick: (event, rowData) => handleDeleteProject(rowData)
+                                    tooltip: 'Delete Movie',
+                                    onClick: (event, rowData) => handleDeleteMovie(rowData)
                                 },
                                 {
                                     icon: () => <EditIcon />,
-                                    tooltip: 'Edit Project',
+                                    tooltip: 'Edit Movie',
                                     onClick: (event, rowData) => {
-                                        handleRedirectToEditProject(rowData);
+                                        handleRedirectToEditMovie(rowData);
                                     } 
                                 }
                             ] : [{
                                 icon: () => <AssignmentIcon />,
-                                tooltip: "View tasks",
-                                onClick: (event, rowData) => handleRedirectTasks(rowData),
+                                tooltip: "View reviews",
+                                onClick: (event, rowData) => handleRedirectToReviews(rowData),
                             }]}
                             options={{
-                                search: true,
+                                // search: true,
                                 sorting: true,
                                 rowStyle: () => {
                                     return { backgroundColor: "#f5c172", fontSize: 14 }
@@ -321,11 +322,11 @@ const ListMovies = () => {
                             }}
                             localization={{
                                 body: {
-                                    emptyDataSourceMessage: "No project found.",
+                                    emptyDataSourceMessage: "No movie found.",
                                 },
-                                toolbar: {
-                                    searchPlaceholder: "Search",
-                                },
+                                // toolbar: {
+                                //     searchPlaceholder: "Search",
+                                // },
                                 // pagination: {
                                 //     labelRowsSelect: "projects per page",
                                 //     firstAriaLabel: "paginationFirstPage",

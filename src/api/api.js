@@ -1,6 +1,5 @@
 import axios from "axios"
 
-// const API_URL = "https://ebs-software-v1.herokuapp.com/api"
 const API_URL = "https://localhost:44303/api"
 const token = localStorage.getItem("token")
 
@@ -74,6 +73,20 @@ export const editProject = async (projectCode, payload) => {
 	}
 }
 
+export const editMovie = async (id, payload) => {
+	try {
+		const { status } = await axios.put(`${API_URL}/Movies/${id}`, payload, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 36 ~ editMovie")
+		return status;
+	} catch (err) {
+		throw err
+	}
+}
+
 export const deleteProject = async projectCode => {
 	try {
 		const { status } = await axios.delete(`${API_URL}/projects/${projectCode}`, {
@@ -88,9 +101,37 @@ export const deleteProject = async projectCode => {
 	}
 }
 
+export const deleteMovie = async id => {
+	try {
+		const { status } = await axios.delete(`${API_URL}/Movies/${id}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 50 ~ deleteMovie")
+		return status;
+	} catch (err) {
+		throw err
+	}
+}
+
 export const getTasksForProject = async projectCode => {
 	try {
 		const { data } = await axios.get(`${API_URL}/projects/${projectCode}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 64 ~ getTasksForProject")
+		return data;
+	} catch (err) {
+		throw err
+	}
+}
+
+export const getReviewsForMovies = async idMovie => {
+	try {
+		const { data } = await axios.get(`${API_URL}/Movies/${idMovie}/Reviews`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
