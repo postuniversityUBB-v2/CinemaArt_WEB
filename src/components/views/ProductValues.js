@@ -57,11 +57,11 @@ function ProductValues(props) {
                                 alt="suitcase"
                             />
                             <Typography variant="h6" className={classes.title}>
-                                The best software tool
+                                The best movies
                             </Typography>
                             <Typography variant="h5">
-                                {'Designed for security and scale. '}
-                                {'Sleep soundly with enhanced administration and security.'}
+                                {'A selection of the best movies. '}
+                                {'Get the latest news from leading industry trades'}
                             </Typography>
                         </div>
                     </Grid>
@@ -76,8 +76,7 @@ function ProductValues(props) {
                                 New experiences
                             </Typography>
                             <Typography variant="h5">
-                                {'Streamline your work with automation. '}
-                                {'Save time, stay focused and work smarter with EBS automation. '}
+                                {'Explore Movies & TV shows. '}
                             </Typography>
                         </div>
                     </Grid>
@@ -89,10 +88,10 @@ function ProductValues(props) {
                                 alt="clock"
                             />
                             <Typography variant="h6" className={classes.title}>
-                                EBS Software Premium
+                                Just Watch Premium
                             </Typography>
                             <Typography variant="h5">
-                                {'Ensure your team and organization are ready to scale with '}
+                                {'The essential resource for entertainment proffesionals. '}
                                 {'24x7 Premium Support, and more.'}
                             </Typography>
                         </div>

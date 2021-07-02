@@ -78,10 +78,10 @@ function ProductCTA(props) {
                     <div className={classes.card}>
                         <form onSubmit={handleSubmit} className={classes.cardContent}>
                             <Typography variant="h2" component="h2" gutterBottom>
-                                Receive offers
+                                Receive latest news
                             </Typography>
                             <Typography variant="h5">
-                                Be the first to now when discounts or new features are available.
+                                Be the first to know when new movies are available.
                             </Typography>
                             <TextField noBorder className={classes.textField} placeholder="Your email" />
                             <Button type="submit" color="primary" variant="contained" className={classes.button}>
@@ -94,7 +94,7 @@ function ProductCTA(props) {
                     <Hidden smDown>
                         <div className={classes.imageDots} />
                         <img
-                            src='/style/images/work_laptop.png'
+                            src='/style/images/cinema_15.jpg'
                             alt="call to action"
                             className={classes.image}
                         />

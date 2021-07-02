@@ -11,7 +11,7 @@ function Copyright() {
         <React.Fragment>
             {'© '}
             <Link color="inherit" href="https://material-ui.com/">
-                EBS SOFTWARE
+                Just Watch
             </Link>{' '}
             {new Date().getFullYear()}
         </React.Fragment>
@@ -131,9 +131,9 @@ export default function AppFooter() {
                         <Typography variant="caption">
                             {'Made by '}
                             <Link href="https://www.freepik.com" rel="sponsored" title="Freepik">
-                                Team 1,
+                                Oana Ujica,
                             </Link>
-                            {' students at '}
+                            {' student at '}
                             <Link href="https://www.flaticon.com" rel="sponsored" title="Flaticon">
                                 Postgraduate training programme
                             </Link>

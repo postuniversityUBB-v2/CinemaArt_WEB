@@ -6,9 +6,9 @@ import Terms from "../pages/Terms/Terms";
 import Privacy from "../pages/Privacy/Privacy";
 import About from "../pages/About/About";
 import Contact from '../pages/Contact/Contact';
-import ListProjects from '../pages/Project/ListProjects';
-import CreateProject from '../pages/Project/CreateProject';
-import EditProject from '../pages/Project/EditProject';
+import ListMovies from '../pages/Movie/ListMovies';
+import CreateProject from '../pages/Movie/CreateProject';
+import EditProject from '../pages/Movie/EditProject';
 import ListTasks from '../pages/Task/ListTasks';
 import CreateTask from '../pages/Task/CreateTask';
 import EditTask from '../pages/Task/EditTask';
@@ -36,7 +36,7 @@ const baseRoutes = [
     exactRoutes("/privacy", Privacy),
     exactRoutes("/about", About),
     exactRoutes("/contact", Contact),
-    exactRoutes("/project/list", ListProjects),
+    exactRoutes("/movie/list", ListMovies),
     exactRoutes("/project/create", CreateProject),
     exactRoutes("/project/edit", EditProject),
     exactRoutes("/task/list", ListTasks),

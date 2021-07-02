@@ -43,14 +43,14 @@ const useStyles = makeStyles(theme => ({
 function SignUp() {
     const classes = useStyles();
     const [sent, setSent] = React.useState(false);
-	// const [firstName, setFirstName] = useState("")
-	// const [lastName, setLastName] = useState("")
+	const [firstName, setFirstName] = useState("")
+	const [lastName, setLastName] = useState("")
 	const [email, setEmail] = useState("")
 	// const [username, setUsername] = useState("")
 	const [password, setPassword] = useState("")
 	const [confirmPassword, setConfirmPassword] = useState("")
+	const [role, setRole] = useState("")
 
-	// const [role, setRole] = useState("")
 	const [done, setDone] = useState(false)
     const [error, setError] = useState(false)
     const [user,setUser]= useState(JSON.parse(localStorage.getItem("user")))
@@ -60,14 +60,14 @@ function SignUp() {
 		try {
 			const status = await register({
 				// userCode: uuidv4(),
-				// firstName: firstName,
-				// lastName: lastName,
 				// username: username,
 				email: email,
 				password: password,
 				confirmPassword: confirmPassword,
+				firstName: firstName,
+				lastName: lastName,
+				role: role,
 				// isAdmin: false,
-				// roles: [role],
 			})
 			if (status === 200) {
 				setDone(true)
@@ -111,7 +111,7 @@ function SignUp() {
 					) : (
 						<form className={classes.form} onSubmit={e => sendRegister(e)}>
 							<Grid container spacing={2}>
-								{/* <Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={6}>
 									<TextField
 										autoComplete="fname"
 										name="firstName"
@@ -135,7 +135,7 @@ function SignUp() {
 										autoComplete="lname"
 										onChange={e => setLastName(e.target.value)}
 									/>
-								</Grid> */}
+								</Grid>
 								<Grid item xs={12}>
 									<TextField
 										variant="outlined"
@@ -186,7 +186,7 @@ function SignUp() {
 										onChange={e => setConfirmPassword(e.target.value)}
 									/>
 								</Grid>
-								{/* <Grid item xs={12}>
+								<Grid item xs={12}>
 									<FormControl className={classes.select} variant="outlined">
 										<InputLabel id="demo-simple-select-outlined-label">
 											Role
@@ -197,11 +197,11 @@ function SignUp() {
 											label="Role"
 											onChange={e => setRole(e.target.value)}
 										>
-											<MenuItem value="ROLE_USER">User</MenuItem>
-											<MenuItem value="ROLE_ADMIN">Admin</MenuItem>
+											<MenuItem value="User">User</MenuItem>
+											<MenuItem value="Admin">Admin</MenuItem>
 										</Select>
 									</FormControl>
-								</Grid> */}
+								</Grid>
 							</Grid>
 							<Button
 								type="submit"

@@ -89,56 +89,56 @@ function ProductCategories(props) {
     const images = [
         {
             url:
-                '/style/images/punch.png',
-            title: 'Projects',
+                '/style/images/cinema_8.jpg',
+            title: 'Biography',
             width: '40%',
         },
         {
             url:
-                '/style/images/MicrosoftTeams-image.png',
-            title: 'Team',
+                '/style/images/cinema_11.jpg',
+            title: 'Horror',
             width: '20%',
         },
         {
             url:
-                '/style/images/office_3.png',
-            title: 'Work',
+                '/style/images/cinema_9.jpg',
+            title: 'Action',
             width: '40%',
         },
         {
             url:
-                '/style/images/tasks.png',
-            title: 'Tasks',
+                'https://images.unsplash.com/photo-1453747063559-36695c8771bd?auto=format&fit=crop&w=400&q=80',
+            title: 'History',
             width: '38%',
         },
         {
             url:
-                '/style/images/work_7.png',
-            title: 'Organize',
+                '/style/images/cinema_10.jpg',
+            title: 'Comedy',
             width: '38%',
         },
         {
             url:
-                '/style/images/get_shit_done.png',
-            title: 'IT',
+                '/style/images/cinema_13.jpg',
+            title: 'Musical',
             width: '24%',
         },
         {
             url:
-                'https://images.unsplash.com/photo-1506941433945-99a2aa4bd50a?auto=format&fit=crop&w=400&q=80',
-            title: 'Plan',
+                '/style/images/cinema_12.jpg',
+            title: 'Romance',
             width: '40%',
         },
         {
             url:
-                '/style/images/mindset.jpg',
-            title: 'Mindset',
+                '/style/images/cinema_14.jpg',
+            title: 'Adventure',
             width: '20%',
         },
         {
             url:
-                'https://images.unsplash.com/photo-1518136247453-74e7b5265980?auto=format&fit=crop&w=400&q=80',
-            title: 'Development',
+                '/style/images/cinema_5.jpg',
+            title: 'Thriller',
             width: '40%',
         },
     ];
@@ -146,7 +146,7 @@ function ProductCategories(props) {
     return (
         <Container className={classes.root} component="section">
             <Typography variant="h4" marked="center" align="center" component="h2">
-                Software development tool for teams
+                Art, culture and movies come together
             </Typography>
             <div className={classes.images}>
                 {images.map((image) => (

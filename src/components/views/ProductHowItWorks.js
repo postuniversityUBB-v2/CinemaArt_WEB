@@ -81,7 +81,7 @@ function ProductHowItWorks(props) {
                                     className={classes.image}
                                 />
                                 <Typography variant="h5" align="center">
-                                    Register to have access to all team's benefits.
+                                    Register to have access to movies details and reviews.
                                 </Typography>
                             </div>
                         </Grid>
@@ -94,7 +94,7 @@ function ProductHowItWorks(props) {
                                     className={classes.image}
                                 />
                                 <Typography variant="h5" align="center">
-                                    Start creating your first projects or just view team's tasks.
+                                    Start watching best movies.
                                 </Typography>
                             </div>
                         </Grid>
@@ -107,7 +107,7 @@ function ProductHowItWorks(props) {
                                     className={classes.image}
                                 />
                                 <Typography variant="h5" align="center">
-                                    {'New offers every week. New experiences, new surprises. '}
+                                    {'New movies every week. New experiences, new surprises. '}
                                 </Typography>
                             </div>
                         </Grid>

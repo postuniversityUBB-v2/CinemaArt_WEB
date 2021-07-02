@@ -93,7 +93,7 @@ const Banner = (props) => {
 
 const items = [
     {
-        Name: "Cinema Art",
+        Name: "Just Watch Movies",
         Caption: "",
         contentPosition: "left",
         Items: [
@@ -108,7 +108,7 @@ const items = [
         ]
     },
     {
-        Name: "Cinema Art",
+        Name: "Just Watch Movies",
         Caption: "",
         contentPosition: "middle",
         Items: [

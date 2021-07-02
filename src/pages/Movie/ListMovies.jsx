@@ -2,7 +2,8 @@ import withRoot from '../../components/withRoot';
 import React, { useState, useEffect, forwardRef } from "react"
 import { Redirect, useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
-import MaterialTable from "material-table"
+import MaterialTable from "material-table";
+import TablePagination from '@material-ui/core/TablePagination';
 import {
 	Divider,
 	Grid,
@@ -28,7 +29,7 @@ import EditIcon from '@material-ui/icons/Edit'
 
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
-import { getProjects, deleteProject } from "../../api/api"
+import { getMovies, deleteProject } from "../../api/api"
 import LoadingSpinner from "../../components/components/LoadingSpinner"
 
 const tableIcons = {
@@ -77,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ListProjects = () => {
+const ListMovies = () => {
 	const table = tableStyles();
     const classes = useStyles();
 
@@ -85,6 +86,18 @@ const ListProjects = () => {
 	const [data, setData] = useState([])
 	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")))
 	const history = useHistory()
+
+    const [page, setPage] = React.useState(1);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(1);
+    };
 
 	const handleRedirectTasks = rowData => {
 		localStorage.setItem('project', JSON.stringify(rowData));
@@ -120,9 +133,9 @@ const ListProjects = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const data = await getProjects()
-				console.log("🚀 ~ file: ListProjects.js ~ line 69 ~ data", data)
-				setData(data)
+				const rows = await getMovies(page, rowsPerPage)
+				console.log("🚀 ~ file: ListProjects.js ~ line 69 ~ data", rows.entities.yearOfRelease)
+				setData(rows.entities)
 
 				setIsLoading(false)
 			} catch (err) {
@@ -130,7 +143,7 @@ const ListProjects = () => {
 			}
 		}
 		fetchData()
-	}, [])
+	}, [page, rowsPerPage])
 
 	if (!user) {
 		return <Redirect to="/" />
@@ -147,13 +160,13 @@ const ListProjects = () => {
                         <div className="newEntity">
                             <Grid container spacing={1}>
                                 <Grid container item xs={12} justify="flex-end">
-                                    {user?.role === "[ROLE_ADMIN]" ? (
+                                    {user?.role === "Admin" ? (
                                         <>
                                             <Typography variant="h4" className={classes.title}>
-                                                All Projects
+                                                All Movies
                                             </Typography>
                                             <Tooltip
-                                                title="Create new project"
+                                                title="Create new movie"
                                                 arrow
                                                 TransitionComponent={Fade}
                                                 TransitionProps={{ timeout: 600 }}
@@ -180,7 +193,7 @@ const ListProjects = () => {
                             icons={tableIcons}
                             columns={[
                                 {
-                                    title: "Project Name",
+                                    title: "Title",
                                     field: "title",
                                     render: rowData => (
                                         <div className={table.name}>{rowData.title}</div>
@@ -191,18 +204,20 @@ const ListProjects = () => {
                                     customSort: (a, b) => a?.title?.localeCompare(b?.title),
                                 },
                                 {
-                                    title: "Created By",
-                                    field: "createdBy",
+                                    title: "Release",
+                                    field: "release",
                                     render: rowData => (
-                                        <div className={table.name}>{rowData.createdBy}</div>
+                                        <div className={table.name}>{rowData.yearOfRelease}</div>
                                     ),
                                     searchable: true,
                                     sortable: true,
                                 },
                                 {
-                                    title: "Project Status",
-                                    field: "projectStatus",
-                                    render: rowData => rowData.projectStatus,
+                                    title: "Genre",
+                                    field: "genre",
+                                    render: rowData => (
+                                        <div className={table.name}>{rowData.genre}</div>
+                                    ),
                                     searchable: true,
                                     sortable: true,
                                 },
@@ -216,12 +231,11 @@ const ListProjects = () => {
                                     sortable: true,
                                 },
                                 {
-                                    title: "Deadline",
-                                    field: "deadline",
-                                    render: rowData => formattedDate(rowData.deadline),
+                                    title: "Director",
+                                    field: "director",
+                                    render: rowData => rowData.director,
                                     searchable: true,
                                     sortable: true,
-                                    customFilterAndSearch: (searchValue, rowData) => handleSearchDate(searchValue, rowData.deadline)
                                 },
                                 {
                                     title: "Date Added",
@@ -232,16 +246,29 @@ const ListProjects = () => {
                                     customFilterAndSearch: (searchValue, rowData) => handleSearchDate(searchValue, rowData.dateAdded)
                                 },
                                 {
-                                    title: "Last Modified",
-                                    field: "lastModified",
-                                    render: rowData => formattedDate(rowData.lastModified),
+                                    title: "Duration",
+                                    field: "durationInMinutes",
+                                    render: rowData => rowData.durationInMinutes,
                                     searchable: true,
                                     sortable: true,
-                                    customFilterAndSearch: (searchValue, rowData) => handleSearchDate(searchValue, rowData.lastModified)
+                                },
+                                {
+                                    title: "Rating",
+                                    field: "rating",
+                                    render: rowData => rowData.rating,
+                                    searchable: true,
+                                    sortable: true,
+                                },
+                                {
+                                    title: "Watched",
+                                    field: "watched",
+                                    render: rowData => rowData.watched ? "Yes" : "No",
+                                    searchable: true,
+                                    sortable: true,
                                 },
                             ]}
                             data={data}
-                            actions={ user?.role === "[ROLE_ADMIN]" ? [
+                            actions={ user?.role === "Admin" ? [
                                 {
                                     icon: () => <AssignmentIcon />,
                                     tooltip: "View tasks",
@@ -278,16 +305,16 @@ const ListProjects = () => {
                                 draggable: false,
                                 thirdSortClick: false,
                                 showTitle: false,
-                                initialPage: 0,
-                                paging: true,
-                                pageSize: 5,
-                                pageSizeOptions: [
-                                    5,
-                                    10,
-                                    25,
-                                    { value: data.length, label: "All" },
-                                ],
-                                paginationType: "normal",
+                                // initialPage: 0,
+                                paging: false,
+                                // pageSize: 5,
+                                // pageSizeOptions: [
+                                //     5,
+                                //     10,
+                                //     25,
+                                //     { value: data.length, label: "All" },
+                                // ],
+                                // paginationType: "normal",
                                 padding: "default",
                             }}
                             localization={{
@@ -297,14 +324,23 @@ const ListProjects = () => {
                                 toolbar: {
                                     searchPlaceholder: "Search",
                                 },
-                                pagination: {
-                                    labelRowsSelect: "projects per page",
-                                    firstAriaLabel: "paginationFirstPage",
-                                    previousAriaLabel: "paginationPreviousPage",
-                                    nextAriaLabel: "paginationNextPage",
-                                    lastAriaLabel: "paginationLastPage",
-                                },
+                                // pagination: {
+                                //     labelRowsSelect: "projects per page",
+                                //     firstAriaLabel: "paginationFirstPage",
+                                //     previousAriaLabel: "paginationPreviousPage",
+                                //     nextAriaLabel: "paginationNextPage",
+                                //     lastAriaLabel: "paginationLastPage",
+                                // },
                             }}
+                        />
+                        <TablePagination
+                            rowsPerPageOptions={[5, 25, 50]}
+                            component="div"
+                            count={data.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </>
                 )}
@@ -333,4 +369,4 @@ function handleSearchDate(searchValue, rowData) {
     return false;
 };
 
-export default withRoot(ListProjects);
+export default withRoot(ListMovies);

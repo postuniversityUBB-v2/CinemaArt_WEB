@@ -61,15 +61,16 @@ function Login() {
 			password: password,
 		})
 
-		const token = data.token;
-		localStorage.setItem("token", token)
+
+		localStorage.setItem("token", data.token)
 		localStorage.setItem(
 			"user",
 			JSON.stringify({
-				// firstName: items[1],
-				// lastName: items[2],
-				token: token
-				// role: items[4],
+				firstName: data.firstName,
+				lastName: data.lastName,
+				email: data.email,
+				token: data.token,
+				role: data.role,
 			})
 		)
 		if (status === 200) {

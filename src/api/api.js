@@ -18,6 +18,20 @@ export const getProjects = async () => {
 	}
 }
 
+export const getMovies = async (page, perPage) => {
+	try {
+		const { data } = await axios.get(`${API_URL}/Movies?page=${page}&perPage=${perPage}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 5 ~ getMovies ~ response", data)
+		return data
+	} catch (err) {
+		throw err
+	}
+}
+
 export const postProjects = async payload => {
 	try {
 		await axios.post(`${API_URL}/projects`, payload, {

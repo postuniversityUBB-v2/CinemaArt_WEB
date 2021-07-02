@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(3),
     },
     linkSecondary: {
-        color: theme.palette.secondary.main,
+        color: theme.palette.warning.dark,
     },
     root: {
         display: 'flex',
@@ -156,7 +156,7 @@ function AppAppBar(props) {
                         className={classes.title}
                         href="/home/index"
                     >
-                        {'ebs software'}
+                        {'Just Watch'}
                     </Link>
                     <div className={classes.right}>
                     {user ? (  
@@ -239,11 +239,11 @@ function AppAppBar(props) {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button component="a" href="/project/list">
+                        <ListItem button component="a" href="/movie/list">
                             <ListItemIcon>
                                 <AccountTreeIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Projects"/>
+                            <ListItemText primary="Movies"/>
                         </ListItem>
                         <ListItem button component="a" href="/user/list">
                             <ListItemIcon>
