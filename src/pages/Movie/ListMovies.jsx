@@ -56,7 +56,7 @@ const StyledDivider = withStyles(() => ({
 
 const tableStyles = makeStyles({
 	root: {
-		minWidth: 300,
+		minWidth: 100,
 	},
 	name: {
 		whiteSpace: "normal",
@@ -89,6 +89,7 @@ const ListMovies = () => {
 
     const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [totalEntities, setTotalEntities] = React.useState(0);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -136,6 +137,7 @@ const ListMovies = () => {
 				const rows = await getMovies(page, rowsPerPage)
 				console.log("🚀 ~ file: ListProjects.js ~ line 69 ~ data", rows.entities.yearOfRelease)
 				setData(rows.entities)
+                setTotalEntities(rows.totalEntities);
 
 				setIsLoading(false)
 			} catch (err) {
@@ -176,7 +178,7 @@ const ListMovies = () => {
                                                 <Fab
                                                     id="buttonToCreateProject"
                                                     aria-label="add new project"
-                                                    href="/project/create"
+                                                    href="/movie/create"
                                                     className={classes.createProject}
                                                 >
                                                     <AddIcon />
@@ -334,7 +336,7 @@ const ListMovies = () => {
                             }}
                         />
                         <TablePagination
-                            rowsPerPageOptions={[5, 25, 50]}
+                            rowsPerPageOptions={[5, 25, 50, totalEntities]}
                             component="div"
                             count={data.length}
                             rowsPerPage={rowsPerPage}

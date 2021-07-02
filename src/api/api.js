@@ -46,6 +46,20 @@ export const postProjects = async payload => {
 	}
 }
 
+export const postMovies = async payload => {
+	try {
+		await axios.post(`${API_URL}/Movies`, payload, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 17 ~ postMovies")
+		return
+	} catch (err) {
+		throw err
+	}
+}
+
 export const editProject = async (projectCode, payload) => {
 	try {
 		const { status } = await axios.put(`${API_URL}/projects/${projectCode}`, payload, {

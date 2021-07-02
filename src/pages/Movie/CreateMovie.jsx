@@ -8,20 +8,23 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, Slide } from '
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import 'date-fns';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
-import { postProjects } from "../../api/api";
+import { postMovies } from "../../api/api";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
         marginRight: theme.spacing(33),
         marginBottom: theme.spacing(14),
-        width: 300,
+        width: 200,
     },
     textField : {
-        width: 380,
+        width: 240,
     },
     keyboardDatePicker: {
-        width: 380,
+        width: 240,
     },
     dialogCreateProjectText: {
         color: "black",
@@ -126,11 +129,15 @@ const CreateProject = () => {
 
     const SubmitButton = (props) => ( <button {...props} type="submit" />);
 
-    const projectStatuses = ['Dev', 'Alpha', 'Beta', 'Production'];
+    const movieGenre = ['Action', 'Documentary', 'Biography', 'Comedy', 'Adventure', 'Horror', 'History', 'SciFi', 'Animation', 'Thriller', 'Romance', 'Musical'];
     const [title, setTitle] = useState('');
-    const [projectStatus, setProjectStatus] = useState('');
+    const [genre, setGenre] = useState('');
     const [description, setDescription] = useState('');
-    const [deadline, setDeadline] = useState(null);
+    const [durationInMinutes, setDurationInMinutes] = useState(1);
+    const [yearOfRelease, setYearOfRelease] = useState(null);
+    const [director, setDirector] = useState('');
+    const [rating, setRating] = useState(1);
+    const [watched, setWatched] = useState(false);
     
     const [openBackToList, isOpenBackToList] = useState(false);
     const [openCreateProject, isOpenCreateProject] = useState(false);
@@ -159,23 +166,34 @@ const CreateProject = () => {
         setDescription(event.target.value);
     };
 
-    const handleChangeProjectStatus = (event) => {
-        setProjectStatus(event.target.value);
-    };
-    
-    const handleDeadline = (date) => {
-        setDeadline(date);
+    const handleChangeGenre = (event) => {
+        setGenre(event.target.value);
     };
 
-    const handleResetDatePickerDeadline = () => {
-        setDeadline(null);
+    const handleChangeDurationInMinutes = (event) => {
+        setDurationInMinutes(event.target.value);
+    };
+
+    const handleChangeYearOfRelease = (year) => {
+        setYearOfRelease(year);
+    };
+
+    const handleChangeDirector = (event) => {
+        setDirector(event.target.value);
+    };
+
+    const handleChangeRating = (event) => {
+        setRating(event.target.value);
+    };
+
+    const handleChangeWatched = () => {
+        setWatched(!watched);
     };
 
     const handleReset = () => {
         setTitle('');
-        setProjectStatus('');
+        setGenre('');
         setDescription('');
-        setDeadline(handleResetDatePickerDeadline);
     }
 
     const { register, handleSubmit } = useForm();
@@ -184,10 +202,11 @@ const CreateProject = () => {
         const payload = {
             ...values
         };
-        payload.deadline = formatDate(values.deadline);
+        payload.dateAdded = new Date();
+        console.log(payload);
 
         try {
-            postProjects(payload);
+            postMovies(payload);
             isOpenCreateProject(true);
         } catch (err) {
             console.log(err);
@@ -198,7 +217,7 @@ const CreateProject = () => {
         <React.Fragment>
             <AppAppBar />
                 <div className="createEntity">
-                    <Typography variant="h4" className={classes.title}>Create Project</Typography>
+                    <Typography variant="h4" className={classes.title}>Create Movie</Typography>
                     <RootRef rootRef={domRef}>
                         <form onSubmit={handleSubmit(onSubmit)} autocomplete="off" noValidate>
                             <FormControl id="titleForm" className={classes.formControl}>
@@ -216,24 +235,24 @@ const CreateProject = () => {
                                 />
                             </FormControl>
 
-                            <FormControl id="projectStatusForm" className={classes.formControl}>                    
+                            <FormControl id="genreForm" className={classes.formControl}>                    
                                 <TextField
-                                    id="projectStatus"
+                                    id="movieGenre"
                                     type="text"
-                                    name="projectStatus"
-                                    {...register("projectStatus")}
+                                    name="genre"
+                                    {...register("genre")}
                                     select
-                                    label="Project Status"
-                                    value ={projectStatus}
-                                    onChange={handleChangeProjectStatus}    
+                                    label="Genre"
+                                    value ={genre}
+                                    onChange={handleChangeGenre}    
                                     className={classes.textField}                    
-                                    placeholder="Project Status"
+                                    placeholder="Genre"
                                     InputLabelProps={{shrink: true,}}
-                                    inputProps={{ "data-testid": "projectStatus" }}
+                                    inputProps={{ "data-testid": "genre" }}
                                 >
-                                    {projectStatuses.map((status, index) => (
-                                        <MenuItem key={index} value={status}>
-                                            {status}
+                                    {movieGenre.map((genre, index) => (
+                                        <MenuItem key={index} value={genre}>
+                                            {genre}
                                         </MenuItem>
                                     ))}
                                 </TextField>
@@ -256,26 +275,86 @@ const CreateProject = () => {
                                 />
                             </FormControl>
 
+                            <TextField
+                                id="durationInMinutes"
+                                name="durationInMinutes"
+                                label="Duration in Minutes"
+                                value={durationInMinutes}
+                                {...register("durationInMinutes")}
+                                onChange={handleChangeDurationInMinutes}
+                                inputProps={{ min: "1", max: "600", step: "1" }}
+                                placeholder="Duration in Minutes"
+                                type="number"
+                                InputLabelProps={{shrink: true,}}
+                            />
+
+                            <FormControl id="directorForm" className={classes.formControl}>
+                                <TextField
+                                    id="director"
+                                    type="text"
+                                    name="director"
+                                    value={director}
+                                    {...register("director")}
+                                    onChange={handleChangeDirector}
+                                    className={classes.textField}
+                                    label="Director"
+                                    placeholder="Director"
+                                    InputLabelProps={{shrink: true,}}
+                                />
+                            </FormControl>
+
+                            <FormControl className={classes.formControl}>                            
+                                <TextField
+                                    id="rating"
+                                    name="rating"
+                                    label="Rating"
+                                    value={rating}
+                                    {...register("rating")}
+                                    onChange={handleChangeRating}
+                                    inputProps={{ min: "1", max: "10", step: "0.1" }}
+                                    placeholder="Rating"
+                                    type="number"
+                                    InputLabelProps={{shrink: true,}}
+                                />
+                            </FormControl>
+
                             <FormControl className={classes.formControl}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <DatePicker
-                                        id="deadline"
-                                        name="deadline"
-                                        value={deadline}
-                                        {...register("deadline")}
-                                        onChange={date => handleDeadline(date)}
+                                        id="yearOfRelease"
+                                        name="yearOfRelease"
+                                        value={yearOfRelease}
+                                        views={['year']}
+                                        {...register("yearOfRelease")}
+                                        onChange={date => handleChangeYearOfRelease(date)}
                                         className={classes.keyboardDatePicker}
-                                        format="dd/MM/yyyy"
+                                        format="yyyy"
                                         KeyboardButtonProps={{
-                                            'aria-label': 'deadline',
+                                            'aria-label': 'yearOfRelease',
                                         }}
-                                        label="Deadline"
-                                        placeholder="Deadline   dd/mm/yyyy"
+                                        label="Year of Release"
+                                        placeholder="Year of Release   yyyy"
                                         InputLabelProps={{shrink: true,}}
                                         autoOk={true}
-                                        inputProps={{ "data-testid": "deadline" }}
+                                        inputProps={{ "data-testid": "yearOfRelease" }}
                                     />
                                 </MuiPickersUtilsProvider>
+                            </FormControl>
+
+                            <FormControl component="fieldset">
+                                <FormGroup aria-label="position" row>
+                                    <FormControlLabel
+                                        id="watched"
+                                        className={classes.watched}
+                                        name="watched"
+                                        defaultValue={watched}
+                                        {...register("watched")}
+                                        control={<Checkbox color="secondary" />}
+                                        onChange={handleChangeWatched}
+                                        label="Watched"
+                                        labelPlacement="end"
+                                    />
+                                </FormGroup>
                             </FormControl>
 
                             <Grid container spacing={1}>
@@ -290,7 +369,7 @@ const CreateProject = () => {
                                         size="large"
                                         href="#"
                                     >
-                                        Create Project
+                                        Create Movie
                                     </Button>
                                     <Backdrop open={openCreateProject} onClose={handleCloseCreateProject} elevation={18}>
                                         <Dialog
@@ -302,7 +381,7 @@ const CreateProject = () => {
                                         >
                                             <DialogContent>
                                                 <DialogContentText id="alertDialogDescriptionNewProject" className={classes.dialogCreateProjectText}>
-                                                    New project successfully created!
+                                                    New movie successfully created!
                                                 </DialogContentText>
                                             </DialogContent>
                                             <DialogActions>
@@ -316,7 +395,7 @@ const CreateProject = () => {
                                                                     }}
                                                                     color="primary"
                                                             >
-                                                                New project
+                                                                New movie
                                                             </Button>
                                                         </Grid>
                                                         <Grid container item xs={6} justify="center">
@@ -343,8 +422,8 @@ const CreateProject = () => {
                                         color="primary"
                                         size="large"
                                         onClick={ () => {
-                                            (title !== "" || projectStatus !== "" || description !== "" || 
-                                            deadline !== null) ? handlePopUpBackToList() : handleClickOpenBackToList()}
+                                            (title !== "" || genre !== "" || description !== "" || 
+                                            yearOfRelease !== null) ? handlePopUpBackToList() : handleClickOpenBackToList()}
                                         }
                                     >
                                         Back to list
