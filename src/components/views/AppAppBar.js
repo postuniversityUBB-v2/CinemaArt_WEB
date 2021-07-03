@@ -25,6 +25,8 @@ import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import LocalMoviesIcon from '@material-ui/icons/LocalMovies';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 
 const drawerWidth = 240;
 
@@ -241,21 +243,15 @@ function AppAppBar(props) {
                     <List>
                         <ListItem button component="a" href="/movie/list">
                             <ListItemIcon>
-                                <AccountTreeIcon />
+                                <LocalMoviesIcon />
                             </ListItemIcon>
                             <ListItemText primary="Movies"/>
                         </ListItem>
-                        <ListItem button component="a" href="/user/list">
+                        <ListItem button component="a" href="/watchlist/list">
                             <ListItemIcon>
-                                <PeopleAltIcon />
+                                <PlaylistAddCheckIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Users" />
-                        </ListItem>
-                        <ListItem button component="a" href="/statistics/chart">
-                            <ListItemIcon>
-                                <EqualizerIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Statistics" />
+                            <ListItemText primary="Your Watchlist" />
                         </ListItem>
                     </List>
                 </Drawer>

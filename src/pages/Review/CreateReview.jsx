@@ -1,5 +1,5 @@
 import withRoot from '../../components/withRoot';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
 import { useHistory } from "react-router-dom";
@@ -9,21 +9,24 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, Slide, MenuIte
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import 'date-fns';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
-import { postTask } from "../../api/api";
+import { postReview } from "../../api/api";
 import SelectUsers from '../../components/form/SelectUsers';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
         marginRight: theme.spacing(33),
         marginBottom: theme.spacing(14),
-        width: 300,
+        width: 560,
     },
     textField: {
-        width: 380,
+        width: 560,
     },
     keyboardDatePicker: {
-        width: 380,
+        width: 560,
     },
     dialogCreateTaskText: {
         color: "#f5c172",
@@ -118,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
     },
     title:{
         color: theme.palette.warning.dark,
-        paddingBottom: theme.spacing(6),
+        paddingBottom: theme.spacing(14),
     }
 }));
 
@@ -126,53 +129,32 @@ const CreateTask = () => {
     const domRef = useRef();
     const classes = useStyles();
 
-	let project = {};
-	if (localStorage && localStorage.getItem('project')) {
-	   project = JSON.parse(localStorage.getItem('project'));
+	let movie = {};
+	if (localStorage && localStorage.getItem('movie')) {
+        movie = JSON.parse(localStorage.getItem('movie'));
 	}
-    const projectCode = project.projectCode;
-    const projectTitle = project.title;
+
+    useEffect(() => {
+        console.log("movie", movie);
+    }, []);
+    const movieId = movie.id
+    const movieTitle = movie.title;
 
     const SubmitButton = (props) => (<button {...props} type="submit" />);
 
-    const taskStatuses = [
-        {
-            value: 'DEV_ON_DESK',
-            label: 'Dev on desk',
-        },
-        {
-            value: 'DEV_IN_PROGRESS',
-            label: 'Dev in progress',
-        },
-        {
-            value: 'TESTING',
-            label: 'Testing',
-        },
-        {
-            value: 'CANCELLED',
-            label: 'Cancelled',
-        },
-        {
-            value: 'COMPLETED',
-            label: 'Completed',
-        },
-    ];
-    const [title, setTitle] = useState('');
-    const [taskStatus, setTaskStatus] = useState('');
-    const [description, setDescription] = useState('');
-    const [assignedToUserCode, setAssignedToUserCode] = useState('');
-    const [deadline, setDeadline] = useState(null);
+    const [text, setText] = useState('');
+    const [important, setImportant] = useState(false);
 
     const [openBackToList, isOpenBackToList] = useState(false);
     const [openCreateTask, isOpenCreateTask] = useState(false);
 
     const history = useHistory()
-    const handleRedirectToListTask = () => {
-        localStorage.setItem('project', JSON.stringify(project));
+    const handleRedirectToListReviews = () => {
+        localStorage.setItem('movie', JSON.stringify(movie));
 
         history.push({
-            pathname: "/task/list",
-            search: `?project=${projectTitle}`,
+            pathname: "/review/list",
+            search: `?movie=${movieTitle}`,
         })
     }
 
@@ -188,36 +170,17 @@ const CreateTask = () => {
         isOpenCreateTask(false);
     };
 
-    const handleChangeTitle = (event) => {
-        setTitle(event.target.value);
+    const handleChangeText = (event) => {
+        setText(event.target.value);
     };
 
-    const handleChangeDescription = (event) => {
-        setDescription(event.target.value);
-    };
-
-    const handleChangeTaskStatus = (event) => {
-        setTaskStatus(event.target.value);
-    };
-
-    const handleChangeAssignedToUserCode = (event) => {
-        setAssignedToUserCode(event.target.value);
-    };
-
-    const handleDeadline = (date) => {
-        setDeadline(date);
-    };
-
-    const handleResetDatePickerDeadline = () => {
-        setDeadline(null);
+    const handleChangeImportant = () => {
+        setImportant(!important);
     };
 
     const handleReset = () => {
-        setTitle('');
-        setTaskStatus('');
-        setDescription('');
-        setAssignedToUserCode('');
-        setDeadline(handleResetDatePickerDeadline);
+        setText('');
+        setImportant('');
     }
 
     const { register, handleSubmit } = useForm();
@@ -226,10 +189,11 @@ const CreateTask = () => {
         const payload = {
             ...values
         };
-        payload.deadline = formatDate(values.deadline);
+        payload.dateTime = new Date();
+        payload.important = important === true ? true : false;
 
         try {
-            postTask(payload, projectCode);
+            postReview(movieId, payload);
             isOpenCreateTask(true);
         } catch (err) {
             console.log(err);
@@ -240,87 +204,40 @@ const CreateTask = () => {
         <React.Fragment>
             <AppAppBar />
             <div className="createEntity">
-            <Typography variant="h4" className={classes.title}>Create Task for {projectTitle}</Typography>
+            <Typography variant="h4" className={classes.title}>Create Review for {movieTitle}</Typography>
             <RootRef rootRef={domRef}>
                 <form onSubmit={handleSubmit(onSubmit)} autocomplete="off" noValidate>
-                    <FormControl id="titleForm" className={classes.formControl}>
+                    <FormControl id="textForm" className={classes.formControl}>
                         <TextField
-                            id="title"
-                            type="text"
-                            name="title"
-                            value={title}
-                            {...register("title")}
-                            onChange={handleChangeTitle}
-                            className={classes.textField}
-                            label="Title"
-                            placeholder="Title"
-                            InputLabelProps={{ shrink: true, }}
-                        />
-                    </FormControl>
-
-                    <FormControl id="taskStatusForm" className={classes.formControl}>
-                        <TextField
-                            id="taskStatus"
-                            type="text"
-                            name="taskStatus"
-                            {...register("taskStatus")}
-                            select
-                            label="Task Status"
-                            value={taskStatus}
-                            onChange={handleChangeTaskStatus}
-                            className={classes.textField}
-                            placeholder="Task Status"
-                            InputLabelProps={{ shrink: true, }}
-                            inputProps={{ "data-testid": "taskStatus" }}
-                        >
-                            {taskStatuses.map((status, index) => (
-                                <MenuItem key={index} value={status.value}>
-                                    {status.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </FormControl>
-
-                    <FormControl id="descriptionForm" className={classes.formControl}>
-                        <TextField
-                            id="description"
+                            id="text"
                             type="text"
                             multiline
                             rowsMax={3}
-                            name="description"
-                            value={description}
-                            {...register("description")}
-                            onChange={handleChangeDescription}
+                            name="text"
+                            value={text}
+                            {...register("text")}
+                            onChange={handleChangeText}
                             className={classes.textField}
-                            label="Description"
-                            placeholder="Description"
+                            label="text"
+                            placeholder="text"
                             InputLabelProps={{ shrink: true, }}
                         />
                     </FormControl>
 
-                    <FormControl id="addedByUserCodeForm" className={classes.formControl}>                       
-                        <SelectUsers register={register} handleChangeAssignedToUserCode={handleChangeAssignedToUserCode}/>
-                    </FormControl>
-
-                    <FormControl className={classes.formControl}>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <DatePicker
-                                id="deadline"
-                                name="deadline"
-                                value={deadline}
-                                {...register("deadline")}
-                                onChange={date => handleDeadline(date)}
-                                className={classes.keyboardDatePicker}
-                                format="dd/MM/yyyy"
-                                KeyboardButtonProps={{
-                                    'aria-label': 'deadline',
-                                }}
-                                label="Deadline"
-                                placeholder="Deadline   dd/mm/yyyy"
-                                InputLabelProps={{ shrink: true, }}
-                                autoOk={true}
+                    
+                    <FormControl component="fieldset">
+                        <FormGroup aria-label="position" row>
+                            <FormControlLabel
+                                id="important"
+                                className={classes.important}
+                                name="important"
+                                defaultValue={important}
+                                {...register("important")}
+                                control={<Checkbox color="secondary" checked={important} onChange={handleChangeImportant}/>}
+                                label="Important"
+                                labelPlacement="end"
                             />
-                        </MuiPickersUtilsProvider>
+                        </FormGroup>
                     </FormControl>
 
                     <Grid container spacing={1}>
@@ -335,7 +252,7 @@ const CreateTask = () => {
                                 size="large"
                                 href="#"
                             >
-                                Create Task
+                                Create Review
                             </Button>
                             <Backdrop open={openCreateTask} onClose={handleCloseCreateTask} elevation={18}>
                                 <Dialog
@@ -347,7 +264,7 @@ const CreateTask = () => {
                                 >
                                     <DialogContent>
                                         <DialogContentText id="alertDialogDescriptionNewTask" className={classes.dialogCreateTaskText}>
-                                            New task successfully created!
+                                            New review successfully created!
                                     </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>
@@ -361,13 +278,13 @@ const CreateTask = () => {
                                                     }}
                                                     color="primary"
                                                 >
-                                                    New task
+                                                    New review
                                                 </Button>
                                             </Grid>
                                             <Grid container item xs={6} justify="center">
                                                 <Button id="alertDialogButtonBackToListForBackToList"
                                                     className={classes.dialogCreateTaskBackToList}
-                                                    onClick={handleRedirectToListTask}
+                                                    onClick={handleRedirectToListReviews}
                                                     color="primary"
                                                 >
                                                     Back to List
@@ -382,14 +299,13 @@ const CreateTask = () => {
                         <Grid container item xs={12} justify="center">
                             <Button
                                 id="alertDialogButtonForCreateTask"
-                                className="backToList"
+                                className="reviewbackToList"
                                 style={{backgroundColor: "#f5c172"}}
                                 variant="contained"
                                 color="primary"
                                 size="large"
                                 onClick={() => {
-                                        (title !== "" || taskStatus !== "" || description !== "" ||
-                                        deadline !== null || assignedToUserCode !== "") ? handlePopUpBackToList() : handleRedirectToListTask()
+                                        text !== "" ? handlePopUpBackToList() : handleRedirectToListReviews()
                                     }
                                 }
                             >
@@ -429,7 +345,7 @@ const CreateTask = () => {
                                                 <Button
                                                     id="alertDialogButtonProceedForCreateTask"
                                                     className={classes.dialogProceedButton}
-                                                    onClick={handleRedirectToListTask}
+                                                    onClick={handleRedirectToListReviews}
                                                     color="primary"
                                                 >
                                                     Proceed

@@ -115,6 +115,20 @@ export const deleteMovie = async id => {
 	}
 }
 
+export const deleteWatchlistMovie = async id => {
+	try {
+		const { status } = await axios.delete(`${API_URL}/Watchlists/${id}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 50 ~ deleteWatchlistMovie")
+		return status;
+	} catch (err) {
+		throw err
+	}
+}
+
 export const getTasksForProject = async projectCode => {
 	try {
 		const { data } = await axios.get(`${API_URL}/projects/${projectCode}`, {
@@ -129,7 +143,7 @@ export const getTasksForProject = async projectCode => {
 	}
 }
 
-export const getReviewsForMovies = async idMovie => {
+export const getReviewsForMovie = async idMovie => {
 	try {
 		const { data } = await axios.get(`${API_URL}/Movies/${idMovie}/Reviews`, {
 			headers: {
@@ -151,6 +165,20 @@ export const postTask = async (payload, projectCode) => {
 			},
 		})
 		console.log("🚀 ~ file: api.js ~ line 78 ~ postTask")
+		return
+	} catch (err) {
+		throw err
+	}
+}
+
+export const postReview = async (movieId, payload) => {
+	try {
+		await axios.post(`${API_URL}/Movies/${movieId}/Reviews`, payload, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 78 ~ postReview")
 		return
 	} catch (err) {
 		throw err
@@ -194,6 +222,20 @@ export const getUsers = async () => {
 			},
 		})
 		console.log("🚀 ~ file: api.js ~ line 106 ~ getUsers ~ response", data)
+		return data
+	} catch (err) {
+		throw err
+	}
+}
+
+export const getWatchlists = async (page, perPage) => {
+	try {
+		const { data } = await axios.get(`${API_URL}/Watchlists?page=${page}&perPage=${perPage}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 106 ~ getWatchlist ~ response", data)
 		return data
 	} catch (err) {
 		throw err

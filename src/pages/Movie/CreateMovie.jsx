@@ -350,8 +350,7 @@ const CreateProject = () => {
                                         name="watched"
                                         defaultValue={watched}
                                         {...register("watched")}
-                                        control={<Checkbox color="secondary" />}
-                                        onChange={handleChangeWatched}
+                                        control={<Checkbox color="secondary" checked={watched} onChange={handleChangeWatched}/>}
                                         label="Watched"
                                         labelPlacement="end"
                                     />

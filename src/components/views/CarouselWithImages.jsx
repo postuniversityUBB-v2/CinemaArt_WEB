@@ -148,7 +148,7 @@ function CarouselWithImages() {
                 autoPlay={true}
                 animation={"slide"}
                 indicators={true}
-                timeout={400}
+                timeout={200}
                 cycleNavigation={true}
                 navButtonsAlwaysVisible={false}
                 navButtonsAlwaysInvisible={true}

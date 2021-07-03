@@ -9,11 +9,10 @@ import Contact from '../pages/Contact/Contact';
 import ListMovies from '../pages/Movie/ListMovies';
 import CreateMovie from '../pages/Movie/CreateMovie';
 import EditMovie from '../pages/Movie/EditMovie';
-import ListTasks from '../pages/Task/ListTasks';
-import CreateTask from '../pages/Task/CreateTask';
-import EditTask from '../pages/Task/EditTask';
-import ListUsers from '../pages/User/ListUsers';
-import Charts from '../pages/Statistics/Charts';
+import ListReviews from '../pages/Review/ListReviews';
+import CreateReview from '../pages/Review/CreateReview';
+import EditReview from '../pages/Review/EditReview';
+import UserWatchlist from '../pages/Watchlist/UserWatchlist';
 
 const exactRoutes = (path, component) => ({
     path,
@@ -39,11 +38,10 @@ const baseRoutes = [
     exactRoutes("/movie/list", ListMovies),
     exactRoutes("/movie/create", CreateMovie),
     exactRoutes("/movie/edit", EditMovie),
-    exactRoutes("/task/list", ListTasks),
-    exactRoutes("/task/create", CreateTask),
-    exactRoutes("/task/edit",EditTask),
-    exactRoutes("/user/list", ListUsers),
-    exactRoutes("/statistics/chart", Charts),
+    exactRoutes("/review/list", ListReviews),
+    exactRoutes("/review/create", CreateReview),
+    exactRoutes("/review/edit",EditReview),
+    exactRoutes("/watchlist/list", UserWatchlist),
 ];
 
 const redirects = [

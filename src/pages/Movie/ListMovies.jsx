@@ -25,8 +25,18 @@ import {
 } from "@material-ui/icons"
 import AssignmentIcon from "@material-ui/icons/Assignment"
 import DeleteIcon from '@material-ui/icons/Delete'
+import DetailsIcon from '@material-ui/icons/Details';
 import EditIcon from '@material-ui/icons/Edit'
 import RateReviewIcon from '@material-ui/icons/RateReview';
+import PropTypes from 'prop-types';
+import {  useTheme } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import LastPageIcon from '@material-ui/icons/LastPage';
 
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
@@ -46,11 +56,12 @@ const tableIcons = {
 	)),
 	SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
 	ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
+    DetailsIcon: forwardRef((props, ref) => <DetailsIcon {...props} ref={ref} />),
 }
 
 const StyledDivider = withStyles(() => ({
 	root: {
-		backgroundColor: "#f5c172",
+		backgroundColor: "#f7cc8e",
 		height: 3,
 	},
 }))(Divider);
@@ -72,12 +83,77 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             backgroundColor: theme.palette.warning.dark,
         },
-    },
-    title:{
-        color: theme.palette.warning.dark,
-        padding: theme.spacing(2),
-    }
+},
+title:{
+    color: theme.palette.warning.dark,
+    padding: theme.spacing(2),
+}
 }));
+
+const useStyles1 = makeStyles((theme) => ({
+root: {
+    flexShrink: 0,
+    marginLeft: theme.spacing(2.5),
+},
+}));
+
+function TablePaginationActions(props) {
+const classes = useStyles1();
+const theme = useTheme();
+const { count, page, rowsPerPage, onChangePage } = props;
+
+const handleFirstPageButtonClick = (event) => {
+    onChangePage(event, 0);
+};
+
+const handleBackButtonClick = (event) => {
+    onChangePage(event, page - 1);
+};
+
+const handleNextButtonClick = (event) => {
+    onChangePage(event, page + 1);
+};
+
+const handleLastPageButtonClick = (event) => {
+    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+};
+
+return (
+    <div className={classes.root}>
+    <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+    >
+        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+    </IconButton>
+    <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
+        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+    </IconButton>
+    <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+    >
+        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+    </IconButton>
+    <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+    >
+        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+    </IconButton>
+    </div>
+);
+}
+
+TablePaginationActions.propTypes = {
+count: PropTypes.number.isRequired,
+onChangePage: PropTypes.func.isRequired,
+page: PropTypes.number.isRequired,
+rowsPerPage: PropTypes.number.isRequired,
+};
 
 const ListMovies = () => {
 	const table = tableStyles();
@@ -88,18 +164,18 @@ const ListMovies = () => {
 	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")))
 	const history = useHistory()
 
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [totalEntities, setTotalEntities] = React.useState(data.totalEntities);
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+		setPage(newPage);
+	};
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(1);
-    };
+	const handleChangeRowsPerPage = (event) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
 
 	const handleRedirectToReviews = rowData => {
 		localStorage.setItem('movie', JSON.stringify(rowData));
@@ -107,6 +183,15 @@ const ListMovies = () => {
 		history.push({
 			pathname: "/review/list",
 			search: `?movie=${rowData.title}`
+		})
+	}
+
+    const handleRedirectToWatchlist = rowData => {		
+		localStorage.setItem('movie', JSON.stringify(rowData));
+
+		history.push({
+			pathname: "/movie/edit",
+			search: `?movie=${rowData.title}`,
 		})
 	}
 
@@ -135,7 +220,7 @@ const ListMovies = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const rows = await getMovies(page, rowsPerPage)
+				const rows = await getMovies(page+1, rowsPerPage)
 				console.log("🚀 ~ file: ListProjects.js ~ line 69 ~ data", rows.entities.yearOfRelease)
 				setData(rows.entities)
                 setTotalEntities(rows.totalEntities);
@@ -271,7 +356,31 @@ const ListMovies = () => {
                                 },
                             ]}
                             data={data}
+                            detailPanel={[
+                                {
+                                    icon: () => <PlayCircleFilledIcon />,
+                                    tooltip: 'Play trailer',
+                                    render: rowData => {
+                                      return (
+                                        <iframe 
+                                            width="100%" 
+                                            height="315" 
+                                            src="https://www.youtube.com/embed/P9mwtI82k6E" 
+                                            title="YouTube video player" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen
+                                        />
+                                      )
+                                    },}
+                            ]}
+                            onRowClick={(event, rowData, togglePanel) => togglePanel()}
                             actions={ user?.role === "Admin" ? [
+                                {
+                                    icon: () => <PlaylistAddCheckIcon />,
+                                    tooltip: "Add to watchlist",
+                                    onClick: (event, rowData) => handleRedirectToWatchlist(rowData),
+                                },
                                 {
                                     icon: () => <RateReviewIcon />,
                                     tooltip: "View reviews",
@@ -289,16 +398,28 @@ const ListMovies = () => {
                                         handleRedirectToEditMovie(rowData);
                                     } 
                                 }
-                            ] : [{
-                                icon: () => <AssignmentIcon />,
-                                tooltip: "View reviews",
-                                onClick: (event, rowData) => handleRedirectToReviews(rowData),
-                            }]}
+                            ] : [
+                                {
+                                    icon: () => <PlaylistAddCheckIcon />,
+                                    tooltip: "Add to watchlist",
+                                    onClick: (event, rowData) => handleRedirectToWatchlist(rowData),
+                                },
+                                {
+                                    icon: () => <AssignmentIcon />,
+                                    tooltip: "View reviews",
+                                    onClick: (event, rowData) => handleRedirectToReviews(rowData),
+                                }
+                            ]}
                             options={{
-                                // search: true,
+                                // selection: true,
+                                // selectionProps: rowData => ({
+                                //   disabled: rowData.title === 'Mehmet',
+                                //   color: 'primary'
+                                // }),
+                                search: false,
                                 sorting: true,
                                 rowStyle: () => {
-                                    return { backgroundColor: "#f5c172", fontSize: 14 }
+                                    return { backgroundColor: "#f7cc8e", fontSize: 14 }
                                 },
                                 headerStyle: {
                                     fontWeight: "bold",
@@ -308,16 +429,7 @@ const ListMovies = () => {
                                 draggable: false,
                                 thirdSortClick: false,
                                 showTitle: false,
-                                // initialPage: 0,
                                 paging: false,
-                                // pageSize: 5,
-                                // pageSizeOptions: [
-                                //     5,
-                                //     10,
-                                //     25,
-                                //     { value: data.length, label: "All" },
-                                // ],
-                                // paginationType: "normal",
                                 padding: "default",
                             }}
                             localization={{
@@ -327,27 +439,25 @@ const ListMovies = () => {
                                 // toolbar: {
                                 //     searchPlaceholder: "Search",
                                 // },
-                                // pagination: {
-                                //     labelRowsSelect: "projects per page",
-                                //     firstAriaLabel: "paginationFirstPage",
-                                //     previousAriaLabel: "paginationPreviousPage",
-                                //     nextAriaLabel: "paginationNextPage",
-                                //     lastAriaLabel: "paginationLastPage",
-                                // },
                             }}
                         />
                         <TablePagination
-                            rowsPerPageOptions={[5, 25, 50, totalEntities]}
-                            component="div"
-                            count={data.length}
+                            rowsPerPageOptions={[5, 10, 20]}
+                            colSpan={3}
+                            count={totalEntities}
                             rowsPerPage={rowsPerPage}
                             page={page}
+                            SelectProps={{
+                                inputProps: { 'aria-label': 'rows per page' },
+                                native: true,
+                            }}
                             onChangePage={handleChangePage}
                             onChangeRowsPerPage={handleChangeRowsPerPage}
-                        />
+                            ActionsComponent={TablePaginationActions}
+					    />
                     </>
                 )}
-		</div>
+		    </div>
             <AppFooter />
         </React.Fragment>
     );
