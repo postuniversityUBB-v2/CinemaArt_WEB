@@ -84,10 +84,10 @@ export default function AppFooter() {
                             spacing={2}
                         >
                             <Grid item className={classes.icons}>
-                                <a href="https://material-ui.com/" className={classes.icon}>
+                                <a rel="noreferrer" target="_blank" href="https://www.facebook.com/" className={classes.icon}>
                                     <img src="/style/images/appFooterFacebook.png" alt="Facebook" />
                                 </a>
-                                <a href="https://twitter.com/MaterialUI" className={classes.icon}>
+                                <a rel="noreferrer" target="_blank" href="https://twitter.com/MaterialUI" className={classes.icon}>
                                     <img src="/style/images/appFooterTwitter.png" alt="Twitter" />
                                 </a>
                             </Grid>

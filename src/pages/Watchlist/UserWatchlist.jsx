@@ -23,6 +23,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
@@ -141,12 +142,17 @@ const UserWatchlist = () => {
 
 	const [isLoading, setIsLoading] = useState(true)
 	const [data, setData] = useState([])
+	const [moviesWatchlist, setMoviesWatchlist] = useState([])
 	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")))
+
+	// const watchlistToRemove = moviesWatchlist.find(w => w.movies[0].Id === 2401).Id;
+	// console.log("watchlistToRemove", watchlistToRemove)
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [totalEntities, setTotalEntities] = React.useState(data.totalEntities);
 
+	console.log("moviesWatchlistIds", moviesWatchlist);
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -156,22 +162,26 @@ const UserWatchlist = () => {
 		setPage(0);
 	};
 	
-	const handleRedirectToEditWatchlist = (rowData) =>{
-		// console.log("🚀 ~ file: ListTasks.js ~ line 117 ~ handleRedirectToEditTask ~ rowData", rowData);		
-		// localStorage.setItem('movie', JSON.stringify(movie));
-		// localStorage.setItem('review', JSON.stringify(rowData));
+	// const handleRedirectToEditWatchlist = (rowData) =>{
+	// 	// console.log("🚀 ~ file: ListTasks.js ~ line 117 ~ handleRedirectToEditTask ~ rowData", rowData);		
+	// 	// localStorage.setItem('movie', JSON.stringify(movie));
+	// 	// localStorage.setItem('review', JSON.stringify(rowData));
 
-		history.push({
-			pathname:"/review/edit",
-			search:`?movie=${rowData.title}`,
-		});		
-	}
+	// 	history.push({
+	// 		pathname:"/review/edit",
+	// 		search:`?movie=${rowData.title}`,
+	// 	});		
+	// }
 
 	const handleDeleteWatchlistMovie = rowData => {
 		console.log("rowData", rowData)
+		console.log("rowData.id", rowData.id)
+
+		const watchlistToRemove = moviesWatchlist.find(w => w.movies[0].id === rowData.id).id;
+		console.log("watchlistToRemove", watchlistToRemove)
 		const fetchData = async () => {
 			try {
-				await deleteWatchlistMovie(rowData.id)
+				await deleteWatchlistMovie(watchlistToRemove)
 				console.log("🚀 ~ file: DeleteUserWatchlist.js ~ line 65 ~ delete  watchlist")
 				window.location.reload();
 			} catch (err) {
@@ -185,9 +195,14 @@ const UserWatchlist = () => {
 		const fetchData = async () => {
 			try {
 				const data = await getWatchlists(page+1, rowsPerPage)
-				const movies = data.entities[0].movies;
-				console.log("🚀 ~ file: ListUsers.js ~ line 61 ~ data", movies)
+				let movies = [];
+				data.entities.map(entity => entity.movies.map(movie => movies.push(movie)));
+				console.log("🚀 ~ file: UserWatchlist.js ~ line 61 ~ data", movies)
 				setData(movies)
+
+				let moviesWatchlist = [];
+				data.entities.map(e => moviesWatchlist.push(e));
+				setMoviesWatchlist(moviesWatchlist)
 				setTotalEntities(movies.length)
 
 				setIsLoading(false)
@@ -197,8 +212,7 @@ const UserWatchlist = () => {
 		}
 		fetchData()
 	}, [page, rowsPerPage])
-					
-	// const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+
 	console.log(data.length);
 	if (!user) {
 		return <Redirect to="/" />
@@ -209,7 +223,7 @@ const UserWatchlist = () => {
             <AppAppBar />
             <div className="listEntities">
             <Typography variant="h4" className={classes.title}>
-                {user.firstName}'s Watchlist
+                Your Watchlist
             </Typography>
 
 			{isLoading ? (
@@ -296,17 +310,36 @@ const UserWatchlist = () => {
 							},
 						]}
 						data={data}
+						detailPanel={[
+							{
+								icon: () => <PlayCircleFilledIcon />,
+								tooltip: 'Play trailer',
+								render: rowData => {
+								  return (
+									<iframe 
+										width="100%" 
+										height="315" 
+										src="https://www.youtube.com/embed/P9mwtI82k6E" 
+										title="YouTube video player" 
+										frameborder="0" 
+										allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+										allowfullscreen
+									/>
+								  )
+								},}
+						]}
+						onRowClick={(event, rowData, togglePanel) => togglePanel()}
 						actions={ user?.role === "Admin" ? [
 							{
 								icon: () => <DeleteIcon />,
-								tooltip: 'Delete Review',
+								tooltip: 'Delete Movie from watchlist',
 								onClick: (event, rowData) => handleDeleteWatchlistMovie(rowData)
 							},
-							{
-								icon: () => <EditIcon />,
-								tooltip: 'Edit Review',
-								onClick: (event, rowData) => handleRedirectToEditWatchlist(rowData)
-							}
+							// {
+							// 	icon: () => <EditIcon />,
+							// 	tooltip: 'Edit Review',
+							// 	onClick: (event, rowData) => handleRedirectToEditWatchlist(rowData)
+							// }
 						] : [							
 							{
 								icon: () => <DeleteIcon />,

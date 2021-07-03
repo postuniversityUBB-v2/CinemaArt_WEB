@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -59,6 +59,8 @@ const styles = (theme) => ({
 function ProductHowItWorks(props) {
     const { classes } = props;
 
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
     return (
         <section className={classes.root}>
             <Container className={classes.container}>
@@ -113,16 +115,29 @@ function ProductHowItWorks(props) {
                         </Grid>
                     </Grid>
                 </div>
-                {/* {user} */}
-                <Button
-                    size="large"
-                    variant="contained"
-                    className={classes.button}
-                    component="a"
-                    href="/register"
-                >
-                    Get started
-                </Button>
+                {user !== null
+                ? 
+                    <Button
+                        size="large"
+                        variant="contained"
+                        className={classes.button}
+                        component="a"
+                        href="/movie/list"
+                    >
+                        View Movies
+                    </Button>
+                :                 
+                    <Button
+                        size="large"
+                        variant="contained"
+                        className={classes.button}
+                        component="a"
+                        href="/register"
+                    >
+                        Get started
+                    </Button>
+                }
+
             </Container>
         </section>
     );

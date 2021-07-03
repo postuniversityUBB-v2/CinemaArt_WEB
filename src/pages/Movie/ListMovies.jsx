@@ -40,7 +40,7 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
-import { getMovies, deleteMovie } from "../../api/api"
+import { getMovies, deleteMovie, postMovieToWatchlist } from "../../api/api"
 import LoadingSpinner from "../../components/components/LoadingSpinner"
 
 const tableIcons = {
@@ -186,13 +186,26 @@ const ListMovies = () => {
 		})
 	}
 
-    const handleRedirectToWatchlist = rowData => {		
-		localStorage.setItem('movie', JSON.stringify(rowData));
+    const handleAddMovieToWatchlist = rowData => {		
+		localStorage.setItem('movie', JSON.stringify(rowData));       
 
-		history.push({
-			pathname: "/movie/edit",
-			search: `?movie=${rowData.title}`,
-		})
+        const watchlistDateAdded = new Date();
+        console.log("watchlistDateAdded", watchlistDateAdded);
+        const payload = {
+            watchlistMovieIds: [rowData.id],
+            watchlistDateAdded: watchlistDateAdded.toISOString()
+        };
+        console.log(payload);
+
+        try {
+            postMovieToWatchlist(payload);
+            // window.location.reload();
+        } catch (err) {
+            console.log(err);
+        }
+		// history.push({
+		// 	pathname: "/watchlist/list"
+		// })
 	}
 
 	const handleRedirectToEditMovie = rowData => {		
@@ -379,7 +392,7 @@ const ListMovies = () => {
                                 {
                                     icon: () => <PlaylistAddCheckIcon />,
                                     tooltip: "Add to watchlist",
-                                    onClick: (event, rowData) => handleRedirectToWatchlist(rowData),
+                                    onClick: (event, rowData) => handleAddMovieToWatchlist(rowData),
                                 },
                                 {
                                     icon: () => <RateReviewIcon />,
@@ -402,7 +415,7 @@ const ListMovies = () => {
                                 {
                                     icon: () => <PlaylistAddCheckIcon />,
                                     tooltip: "Add to watchlist",
-                                    onClick: (event, rowData) => handleRedirectToWatchlist(rowData),
+                                    onClick: (event, rowData) => handleAddMovieToWatchlist(rowData),
                                 },
                                 {
                                     icon: () => <AssignmentIcon />,

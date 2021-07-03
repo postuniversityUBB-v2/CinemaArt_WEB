@@ -59,6 +59,20 @@ export const postMovies = async payload => {
 	}
 }
 
+export const postMovieToWatchlist = async payload => {
+	try {
+		await axios.post(`${API_URL}/Watchlists`, payload, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 17 ~ postMovies")
+		return
+	} catch (err) {
+		throw err
+	}
+}
+
 export const editProject = async (projectCode, payload) => {
 	try {
 		const { status } = await axios.put(`${API_URL}/projects/${projectCode}`, payload, {
@@ -117,7 +131,7 @@ export const deleteMovie = async id => {
 
 export const deleteWatchlistMovie = async id => {
 	try {
-		const { status } = await axios.delete(`${API_URL}/Watchlists/${id}`, {
+		const { status } = await axios.delete(`${API_URL}/Watchlists/${id}/Movie`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
