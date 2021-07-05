@@ -67,11 +67,11 @@ function Login() {
 		localStorage.setItem(
 			"user",
 			JSON.stringify({
-				firstName: name,
-				lastName: name,
-				email: email,
+				firstName: response.name,
+				lastName: response.name,
+				email: response.email,
 				token: response.accessToken,
-				role: "User",
+				role: "Admin",
 			})
 		)
 		if (response.accessToken !== null) {
@@ -81,6 +81,24 @@ function Login() {
 
 	const responseGoogle = (response) => {
 		console.log(response);
+
+		setEmail(response.dt.Nt);
+		setName(response.dt.Ve);
+
+		localStorage.setItem("token", response.accessToken)
+		localStorage.setItem(
+			"user",
+			JSON.stringify({
+				firstName: response.dt.qS,
+				lastName: response.dt.uU,
+				email: response.dt.Nt,
+				token: response.accessToken,
+				role: "Admin",
+			})
+		)
+		if (response.accessToken !== null) {
+			setDone(true)
+		}
 	}
 
 	const sendLogin = async e => {
@@ -164,36 +182,22 @@ function Login() {
 					</form>
                 </React.Fragment>
 
-				<div className="App" style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-					<div style={{display: "flex", justifyContent: "center"}}>					
+				<div className="App" style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+					<div style={{display: "flex", justifyContent: "center", padding: "10px"}}>					
 						<FacebookLogin
-							appId="333550634942475" //APP ID NOT CREATED YET
+							appId="333550634942475"
 							fields="name,email,picture"
 							callback={responseFacebook}
 						/>
 					</div>
-
-					{/* <div class="fb-login-button" 
-						data-width="" 
-						data-size="large" 
-						data-button-type="login_with" 
-						data-layout="default" 
-						data-auto-logout-link="true" 
-						data-use-continue-as="true"
-					>
-					</div> */}
-					<br />
-					<br />
-
-					<div style={{display: "flex", justifyContent: "center"}}>	
+					<div style={{display: "flex", justifyContent: "center", padding: "10px"}}>	
 						<GoogleLogin
-							clientId="" //CLIENTID NOT CREATED YET
+							clientId="881235466006-efnl6nh8ph440amjiivqbbsesvir9mi9.apps.googleusercontent.com"
 							buttonText="SIGN IN WITH GOOGLE"
 							onSuccess={responseGoogle}
 							onFailure={responseGoogle}
 						/>
 					</div>
-
 				</div>
               </AppForm>
             <AppFooter />
