@@ -40,7 +40,7 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import TablePagination from '@material-ui/core/TablePagination';
 
 import { getReviewsForMovie } from "../../api/api";
-import { deleteTask } from "../../api/api";
+import { deleteReview } from "../../api/api";
 import LoadingSpinner from "../../components/components/LoadingSpinner";
 
 const tableIcons = {
@@ -170,10 +170,10 @@ page: PropTypes.number.isRequired,
 rowsPerPage: PropTypes.number.isRequired,
 };
 
-const handleDeleteTask = rowData => {
+const handleDeleteReview = rowData => {
 	const fetchData = async () => {
 		try {
-			await deleteTask(rowData.taskCode)
+			await deleteReview(rowData.id)
 			console.log("🚀 ~ file: ListTasks.js ~ line 65 ~ delete  task")
 			window.location.reload();
 		} catch (err) {
@@ -226,7 +226,7 @@ const ListReviews = () => {
 		const fetchData = async () => {
 			try {
 				const data = await getReviewsForMovie(idMovie);
-				console.log("🚀 ~ file: ListTasks.js ~ line 69 ~ data", data);
+				console.log("🚀 ~ file: ListReviews.js ~ line 69 ~ data", data.entities[0].reviews);
 				setData(data.entities[0].reviews);
 				setTotalEntities(data.entities[0].reviews.length);
 
@@ -336,7 +336,7 @@ const ListReviews = () => {
 							{
 								icon: () => <DeleteIcon />,
 								tooltip: 'Delete Review',
-								onClick: (event, rowData) => handleDeleteTask(rowData)
+								onClick: (event, rowData) => handleDeleteReview(rowData)
 							},
 							{
 								icon: () => <EditIcon />,
