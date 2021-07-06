@@ -101,6 +101,20 @@ export const editMovie = async (id, payload) => {
 	}
 }
 
+export const editReview = async (movieId, reviewId, payload) => {
+	try {
+		const { status } = await axios.put(`${API_URL}/Movies/${movieId}/Reviews/${reviewId}`, payload, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 36 ~ editReview")
+		return status;
+	} catch (err) {
+		throw err
+	}
+}
+
 export const deleteProject = async projectCode => {
 	try {
 		const { status } = await axios.delete(`${API_URL}/projects/${projectCode}`, {
@@ -123,6 +137,21 @@ export const deleteMovie = async id => {
 			},
 		})
 		console.log("🚀 ~ file: api.js ~ line 50 ~ deleteMovie")
+		return status;
+	} catch (err) {
+		throw err
+	}
+}
+
+
+export const deleteReview = async reviewId => {
+	try {
+		const { status } = await axios.delete(`${API_URL}/Movies/Reviews/${reviewId}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		console.log("🚀 ~ file: api.js ~ line 50 ~ deleteReview")
 		return status;
 	} catch (err) {
 		throw err

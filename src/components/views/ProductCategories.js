@@ -151,6 +151,7 @@ function ProductCategories(props) {
             <div className={classes.images}>
                 {images.map((image) => (
                     <ButtonBase
+                        href="/about"
                         key={image.title}
                         className={classes.imageWrapper}
                         style={{

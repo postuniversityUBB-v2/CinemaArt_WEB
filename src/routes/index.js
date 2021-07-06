@@ -40,7 +40,7 @@ const baseRoutes = [
     exactRoutes("/movie/edit", EditMovie),
     exactRoutes("/review/list", ListReviews),
     exactRoutes("/review/create", CreateReview),
-    exactRoutes("/review/edit",EditReview),
+    exactRoutes("/review/edit", EditReview),
     exactRoutes("/watchlist/list", UserWatchlist),
 ];
 
