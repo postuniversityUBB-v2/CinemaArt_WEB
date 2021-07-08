@@ -242,8 +242,8 @@ const ListReviews = () => {
 		return <Redirect to="/" />
 	}
 
-	const handleRedirectToEditTask = (rowData) =>{
-		console.log("🚀 ~ file: ListTasks.js ~ line 117 ~ handleRedirectToEditTask ~ rowData", rowData);		
+	const handleRedirectToEditReview = (rowData) =>{
+		console.log("🚀 ~ file: ListReviews.js ~ line 117 ~ handleRedirectToEditReview ~ rowData", rowData);		
 		localStorage.setItem('movie', JSON.stringify(movie));
 		localStorage.setItem('review', JSON.stringify(rowData));
 
@@ -341,7 +341,7 @@ const ListReviews = () => {
 							{
 								icon: () => <EditIcon />,
 								tooltip: 'Edit Review',
-								onClick: (event, rowData) => handleRedirectToEditTask(rowData)
+								onClick: (event, rowData) => handleRedirectToEditReview(rowData)
 							}
 						] : [] }
 						options={{
