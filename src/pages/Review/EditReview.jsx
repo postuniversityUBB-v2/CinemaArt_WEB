@@ -1,4 +1,5 @@
 import withRoot from '../../components/withRoot';
+import { useHistory } from "react-router-dom";
 import React, { useState, useRef } from "react";
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
@@ -25,8 +26,12 @@ import {
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers"
 import DateFnsUtils from "@date-io/date-fns"
 import "date-fns"
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
 import SelectUsers from "../../components/form/SelectUsers"
-import { updateTask } from "../../api/api"
+import { editReview } from "../../api/api"
 
 const useStyles = makeStyles(theme => ({
 	formControl: {
@@ -166,52 +171,25 @@ const handleFormat = taskStatus => {
 	return value
 }
 
-const EditTask = () => {
-    let task = {};
-	let project = {};
-	if (localStorage && localStorage.getItem('task') && localStorage.getItem('project')) {
-		task = JSON.parse(localStorage.getItem('task'));
-		project = JSON.parse(localStorage.getItem('project'));
+const EditReview = () => {
+    let review = {};
+	let movie = {};
+	if (localStorage && localStorage.getItem('task') && localStorage.getItem('movie')) {
+		review = JSON.parse(localStorage.getItem('review'));
+		movie = JSON.parse(localStorage.getItem('movie'));
 	}
-	const projectTitle = project.title;
-    console.log("🚀 ~ file: EditTask.jsx ~ line 166 ~ EditTaskPage ~ projectTitle", projectTitle)
-    const pageTaskTitle = task?.title;
-   
+	const movieTitle = movie.title;
+    console.log("🚀 ~ file: EditTask.jsx ~ line 166 ~ EditTaskPage ~ projectTitle", movieTitle)   
 	
-	const [title, setTitle] = useState(task?.title)
-	const [taskStatus, setTaskStatus] = useState(handleFormat(task?.taskStatus))
-	const [description, setDescription] = useState(task?.description)
-	const [assignedToUserCode, setAssignedToUserCode] = useState(
-		task?.assignedToUserCode
-	)
-    console.log("🚀 ~ file: EditTask.jsx ~ line 175 ~ EditTaskPage ~ assignedToUserCode", assignedToUserCode)
+    const [text, setText] = useState(review?.text);
+    const [important, setImportant] = useState(review?.important);
 
-	const [deadline, setDeadline] = useState(task?.deadline)
 	const [openBackToList, isOpenBackToList] = useState(false)
 	const [openCreateTask, isOpenCreateTask] = useState(false)
 	const { register, handleSubmit } = useForm()
 	const domRef = useRef()
 	const classes = useStyles()
-	const onSubmit = async (values, e) => {
-		e.preventDefault()
-		const payload = {
-			assignedToUserCode: values.assignedToUserCode ? values.assignedToUserCode : assignedToUserCode ,
-			taskStatus: taskStatus,
-			description: description,
-			title: title,
-			deadline: values.deadline ? formatDate(values.deadline) : deadline,
-		}
-		console.log(
-			"🚀 ~ file: EditTask.jsx ~ line 173 ~ onSubmit ~ payload ",
-			payload
-		)
-		try {
-			const status = await updateTask(payload, task.taskCode)
-			isOpenCreateTask(true)
-		} catch (err) {
-			console.log(err)
-		}
-	}
+
 	const SubmitButton = props => <button {...props} type="submit" />
 
 	const handlePopUpBackToList = () => {
@@ -223,40 +201,32 @@ const EditTask = () => {
 	}
 
 	const handleCloseCreateTask = () => {
-		isOpenCreateTask(false)
-	}
+        isOpenCreateTask(false);
+    };
+	
+    const history = useHistory()
+    const handleRedirectToListReviews = () => {
+        localStorage.setItem('movie', JSON.stringify(movie));
 
-	const handleChangeTitle = event => {
-		setTitle(event.target.value)
-	}
+        history.push({
+            pathname: "/review/list",
+            search: `?movie=${movieTitle}`,
+        })
+    }
 
-	const handleChangeDescription = event => {
-		setDescription(event.target.value)
-	}
+    const handleChangeText = (event) => {
+        setText(event.target.value);
+    };
 
-	const handleChangeTaskStatus = event => {
-		setTaskStatus(event.target.value)
-	}
+    const handleChangeImportant = () => {
+        setImportant(!important);
+    };
 
-	const handleChangeAssignedToUserCode = event => {
-		console.log(
-			"🚀 ~ file: EditTask.jsx ~ line 213 ~ EditTaskPage ~ event",
-			event.target.value
-		)
-		console.log(
-			"🚀 ~ file: EditTask.jsx ~ line 213 ~ EditTaskPage ~ eventsadasdasdasdasdasdasd"
-		)
+    const handleReset = () => {
+        setText('');
+        setImportant('');
+    }
 
-		setAssignedToUserCode(event.target.value)
-	}
-
-	const handleDeadline = date => {
-		setDeadline(date)
-	}
-
-	const handleResetDatePickerDeadline = () => {
-		setDeadline(null)
-	}
 	const handleRedirectToListTask = () => {
 		isOpenCreateTask(false)
 		// window.history.push({
@@ -267,95 +237,62 @@ const EditTask = () => {
 		window.history.back()
 	}
 
+	const onSubmit = async (values, e) => {
+        e.preventDefault();
+        const payload = {
+            ...values
+        };
+        payload.dateTime = review.dateTime;
+        payload.important = important === true ? true : false;
+		payload.text = text;
+
+        try {
+            editReview(movie.id, review.id, payload);
+            isOpenCreateTask(true);
+        } catch (err) {
+            console.log(err);
+        }
+	}
+
     return (
         <React.Fragment>
             <AppAppBar />
             <div className="createEntity">
-                <Typography variant="h4" className={classes.title}>Edit {pageTaskTitle}</Typography>
+                <Typography variant="h4" className={classes.title}>Edit review</Typography>
                 <RootRef rootRef={domRef}>
                     <form onSubmit={handleSubmit(onSubmit)} autocomplete="off" noValidate>
-                        <FormControl id="titleForm" className={classes.formControl}>
-                            <TextField
-                                id="title"
-                                type="text"
-                                name="title"
-                                value={title}
-                                {...register("title")}
-                                onChange={handleChangeTitle}
-                                className={classes.textField}
-                                label="Title"
-                                placeholder="Title"
-                                InputLabelProps={{ shrink: true }}
+                    <FormControl id="textForm" className={classes.formControl}>
+                        <TextField
+                            id="text"
+                            type="text"
+                            multiline
+                            rowsMax={3}
+                            name="text"
+                            value={text}
+                            {...register("text")}
+                            onChange={handleChangeText}
+                            className={classes.textField}
+                            label="text"
+                            placeholder="text"
+                            InputLabelProps={{ shrink: true, }}
+                        />
+                    </FormControl>
+
+                    
+                    <FormControl component="fieldset">
+                        <FormGroup aria-label="position" row>
+                            <FormControlLabel
+                                id="important"
+                                className={classes.important}
+                                name="important"
+                                defaultValue={important}
+                                {...register("important")}
+                                control={<Checkbox color="secondary" checked={important} onChange={handleChangeImportant}/>}
+                                label="Important"
+                                labelPlacement="end"
                             />
-                        </FormControl>
-
-                        <FormControl id="taskStatusForm" className={classes.formControl}>
-                            <Select
-                                id="taskStatus"
-                                type="text"
-                                name="taskStatus"
-                                {...register("taskStatus")}
-                                label="Task Status"
-                                value={taskStatus}
-                                onChange={handleChangeTaskStatus}
-                                className={classes.textField}
-                                placeholder="Task Status"
-                                InputLabelProps={{ shrink: true }}
-                                inputProps={{ "data-testid": "taskStatus" }}
-                            >
-                                {taskStatuses.map((status, index) => (
-                                    <MenuItem key={index} value={status.value}>
-                                        {status.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-
-                        <FormControl id="descriptionForm" className={classes.formControl}>
-                            <TextField
-                                id="description"
-                                type="text"
-                                multiline
-                                rowsMax={3}
-                                name="description"
-                                value={description}
-                                {...register("description")}
-                                onChange={handleChangeDescription}
-                                className={classes.textField}
-                                label="Description"
-                                placeholder="Description"
-                                InputLabelProps={{ shrink: true }}
-                            />
-                        </FormControl>
-
-                        <FormControl id="addedByUserCodeForm" className={classes.formControl}>
-                            <SelectUsers
-                                register={register}
-                                name='User Assigned'
-                                value={assignedToUserCode}
-                            />
-                        </FormControl>
-
-                        <FormControl className={classes.formControl}>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <DatePicker
-                                    id="deadline"
-                                    name="deadline"
-                                    value={deadline}
-                                    {...register("deadline")}
-                                    onChange={date => handleDeadline(date)}
-                                    className={classes.keyboardDatePicker}
-                                    format="dd/MM/yyyy"
-                                    KeyboardButtonProps={{
-                                        "aria-label": "deadline",
-                                    }}
-                                    label="Deadline"
-                                    placeholder="Deadline   dd/mm/yyyy"
-                                    InputLabelProps={{ shrink: true }}
-                                    autoOk={true}
-                                />
-                            </MuiPickersUtilsProvider>
-                        </FormControl>
+                        </FormGroup>
+                    </FormControl>
 
                         <Grid container spacing={1}>
                             <Grid container item xs={12} justify="center">
@@ -369,7 +306,7 @@ const EditTask = () => {
                                     size="large"
                                     href="#"
                                 >
-                                    Edit Task
+                                    Edit Review
                                 </Button>
                                 <Backdrop
                                     open={openCreateTask}
@@ -388,23 +325,34 @@ const EditTask = () => {
                                                 id="alertDialogDescriptionNewTask"
                                                 className={classes.dialogCreateTaskText}
                                             >
-                                                Task edited successfully!
+                                                Review edited successfully!
                                             </DialogContentText>
                                         </DialogContent>
                                         <DialogActions>
-                                            <Grid container spacing={2}>
-                                                <Grid container item xs={12} justify="center">
-                                                    <Button
-                                                        id="alertDialogButtonBackToListForBackToList"
-                                                        className={classes.dialogCreateTaskBackToList}
-                                                        onClick={handleRedirectToListTask}
-                                                        color="primary"
-                                                    >
-                                                        OK
-                                                    </Button>
-                                                </Grid>
+                                        <Grid container spacing={2}>
+                                            <Grid container item xs={6} justify="center">
+                                                <Button id="alertDialogButtonNewTaskForBacktoList"
+                                                    className={classes.dialogCreateTaskNewTask}
+                                                    onClick={() => {
+                                                        handleReset();
+                                                        handleCloseCreateTask();
+                                                    }}
+                                                    color="primary"
+                                                >
+                                                    Edit review
+                                                </Button>
                                             </Grid>
-                                        </DialogActions>
+                                            <Grid container item xs={6} justify="center">
+                                                <Button id="alertDialogButtonBackToListForBackToList"
+                                                    className={classes.dialogCreateTaskBackToList}
+                                                    onClick={handleRedirectToListReviews}
+                                                    color="primary"
+                                                >
+                                                    Back to List
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </DialogActions>
                                     </Dialog>
                                 </Backdrop>
                             </Grid>
@@ -453,4 +401,4 @@ const TransitionCreateTask = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />
 })
 
-export default withRoot(EditTask);
+export default withRoot(EditReview);
