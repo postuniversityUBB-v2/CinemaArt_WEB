@@ -90,25 +90,27 @@ function SignUp() {
             <AppAppBar />
             <AppForm>
                 <React.Fragment>
-                    <TypographyCustom variant="h3" gutterBottom marked="center" align="center">
-                        Sign Up
-                    </TypographyCustom>
-                    <TypographyCustom variant="body2" align="center">
-                        <Link href="/login" underline="always">
-                            Already have an account?
-                        </Link>
-                    </TypographyCustom>
+
                 </React.Fragment>
                 {done ? (
 						<>
-							<Typography>
-								You are now registered! Welcome to the team!
+							<Typography variant="h4">
+								{firstName}, you are now registered!
 							</Typography>
-							<Typography>
-								Click here to <Link to="/login">login</Link>{" "}
+							<Typography variant="h4">
+								Click here to <Link to="/login">sign in</Link>{" "}
 							</Typography>
 						</>
 					) : (
+						<>						
+						<TypographyCustom variant="h3" gutterBottom marked="center" align="center">
+                        	Sign Up
+                    	</TypographyCustom>
+						<TypographyCustom variant="body2" align="center">
+							<Link href="/login" underline="always">
+								Already have an account?
+							</Link>
+                    	</TypographyCustom>
 						<form className={classes.form} onSubmit={e => sendRegister(e)}>
 							<Grid container spacing={2}>
 								<Grid item xs={12} sm={6}>
@@ -213,6 +215,7 @@ function SignUp() {
 								Sign up
 							</Button>
 						</form>
+						</>
 					)}
             </AppForm>
             <AppFooter />
