@@ -1,5 +1,5 @@
 import withRoot from '../../components/withRoot';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useForm } from "react-hook-form";
 import { makeStyles, FormControl, TextField, Grid, Button, RootRef, Backdrop, MenuItem, Typography } from '@material-ui/core';
 import { Dialog, DialogActions, DialogContent, DialogContentText, Slide } from '@material-ui/core';
@@ -13,7 +13,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
 import { editMovie } from "../../api/api";
-import { MovieRounded } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -27,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     keyboardDatePicker: {
         width: 240,
     },
-    dialogEditProjectText: {
+    dialogEditMovieText: {
         color: "black",
         fontWeight: 700,
         fontSize: 20,
@@ -37,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 97,
         minWidth: 333,
     },
-    dialogEditProjectEditProject: {
+    dialogEditMovieEditMovie: {
         height: 36,
         borderRadius: 9,
         borderStyle: "solid",
@@ -50,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
         letterSpacing: 0,
         minWidth: 200,
     },
-    dialogEditProjectBackToList: {
+    dialogEditMovieBackToList: {
         height: 36,
         borderRadius: 9,
         backgroundColor: "#384A9C",
@@ -125,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const EditProject = () => {
+const EditMovie = () => {
     const domRef = useRef();
     const classes = useStyles();
 
@@ -146,8 +145,11 @@ const EditProject = () => {
     const [rating, setRating] = useState(movie.rating);
     const [watched, setWatched] = useState(movie.watched === true ? true : false);
     
+    const [titleError, setTitleError] = useState(false);
+    const [descriptionError, setDescriptionError] = useState(false);
+
     const [openBackToList, isOpenBackToList] = useState(false);
-    const [openEditProject, isOpenEditProject] = useState(false);
+    const [openEditMovie, isOpenEditMovie] = useState(false);
 
     const handleClickOpenBackToList = () => {
         window.open('./list','_self');
@@ -157,8 +159,8 @@ const EditProject = () => {
         isOpenBackToList(false);
     };
 
-    const handleCloseEditProject = () => {
-        isOpenEditProject(false);
+    const handleCloseEditMovie = () => {
+        isOpenEditMovie(false);
     };
 
     const handleChangeTitle = (event) => {
@@ -197,28 +199,46 @@ const EditProject = () => {
         setTitle(movie.title);
         setGenre(movie.genre);
         setDescription(movie.description);
+        setDurationInMinutes(movie.durationInMinutes);
+        setYearOfRelease(movie.yearOfRelease);
+        setDirector(movie.director);
+        setRating(movie.rating);
+        setWatched(movie.watched);
     }
 
     const { register, handleSubmit } = useForm();
     const onSubmit = (values, e) => {
         e.preventDefault();
-		const payload = {
-			dateAdded: movie.dateAdded ,
-			description: description,
-            director: director,
-            durationInMinutes: durationInMinutes,
-			genre: genre,
-            rating: rating,
-			title: title,
-			yearOfRelease: yearOfRelease,
-            watched: watched === true ? true : false,
-		}
-        try {
-            editMovie(movie.id, payload);
-            console.log("🚀 ~ file: EditMovie.js ~ line 193");
-            isOpenEditProject(true);
-        } catch (err) {
-            console.log(err);
+
+        setTitleError(false);
+        setDescriptionError(false);
+
+        if (title === "") {
+            setTitleError(true);
+        }
+
+        if (description.length < 10) {
+            setDescriptionError(true);
+        }
+
+        if (title && description && rating >= 1) {
+            const payload = {
+                dateAdded: movie.dateAdded ,
+                description: description,
+                director: director,
+                durationInMinutes: durationInMinutes,
+                genre: genre,
+                rating: rating,
+                title: title,
+                yearOfRelease: yearOfRelease,
+                watched: watched === true ? true : false,
+            }
+            try {
+                editMovie(movie.id, payload);
+                isOpenEditMovie(true);
+            } catch (err) {
+                return <Typography>Something went wrong...</Typography>
+            }
         }
     }
 
@@ -230,7 +250,9 @@ const EditProject = () => {
                     <RootRef rootRef={domRef}>
                         <form onSubmit={handleSubmit(onSubmit)} autocomplete="off" noValidate>
                             <FormControl id="titleForm" className={classes.formControl}>
-                                <TextField
+                                <TextField                                    
+                                    error={titleError}
+                                    required
                                     id="title"
                                     type="text"
                                     name="title"
@@ -241,6 +263,7 @@ const EditProject = () => {
                                     label="Title"
                                     placeholder="Title"
                                     InputLabelProps={{shrink: true,}}
+                                    helperText={titleError ? "Title is required" : ""}
                                 />
                             </FormControl>
 
@@ -269,6 +292,8 @@ const EditProject = () => {
 
                             <FormControl id="descriptionForm" className={classes.formControl}>
                                 <TextField
+                                    error={descriptionError}
+                                    required
                                     id="description"
                                     type="text"
                                     multiline
@@ -281,6 +306,7 @@ const EditProject = () => {
                                     label="Description"
                                     placeholder="Description"
                                     InputLabelProps={{shrink: true,}}
+                                    helperText={descriptionError ? "Description must have at least 10 characters" : ""}
                                 />
                             </FormControl>
 
@@ -368,7 +394,7 @@ const EditProject = () => {
                             <Grid container spacing={1}>
                                 <Grid container item xs={12} justify="center">
                                     <Button
-                                        id="submitEditProject"
+                                        id="submitEditMovie"
                                         className="inactive-button"
                                         style={{backgroundColor: "#f5c172"}}
                                         component={SubmitButton}
@@ -379,27 +405,27 @@ const EditProject = () => {
                                     >
                                         Edit Movie
                                     </Button>
-                                    <Backdrop open={openEditProject} onClose={handleCloseEditProject} elevation={18}>
+                                    <Backdrop open={openEditMovie} onClose={handleCloseEditMovie} elevation={18}>
                                         <Dialog
-                                            open={openEditProject}
-                                            TransitionComponent={TransitionEditProject}
+                                            open={openEditMovie}
+                                            TransitionComponent={TransitionEditMovie}
                                             keepMounted
                                             aria-describedby="Movie edited!"
                                             disableBackdropClick
                                         >
                                             <DialogContent>
-                                                <DialogContentText id="alertDialogDescriptionEditProject" className={classes.dialogEditProjectText}>
+                                                <DialogContentText id="alertDialogDescriptionEditMovie" className={classes.dialogEditMovieText}>
                                                     Movie successfully edited!
                                                 </DialogContentText>
                                             </DialogContent>
                                             <DialogActions>
                                                 <Grid container spacing={2}>
                                                         <Grid container item xs={6} justify="center">
-                                                            <Button id="alertDialogButtonEditProjectForBacktoList"
-                                                                    className={classes.dialogEditProjectEditProject}
+                                                            <Button id="alertDialogButtonEditMovieForBacktoList"
+                                                                    className={classes.dialogEditMovieEditMovie}
                                                                     onClick={() => {
                                                                         handleReset();
-                                                                        handleCloseEditProject();
+                                                                        handleCloseEditMovie();
                                                                     }}
                                                                     color="primary"
                                                             >
@@ -408,7 +434,7 @@ const EditProject = () => {
                                                         </Grid>
                                                         <Grid container item xs={6} justify="center">
                                                             <Button id="alertDialogButtonBackToListForBackToList"
-                                                                    className={classes.dialogEditProjectBackToList}
+                                                                    className={classes.dialogEditMovieBackToList}
                                                                     style={{backgroundColor: "#f5c172"}}
                                                                     href="./list"
                                                                     color="primary"
@@ -424,7 +450,7 @@ const EditProject = () => {
 
                                 <Grid container item xs={12} justify="center">
                                     <Button
-                                        id="alertDialogButtonForEditProject"
+                                        id="alertDialogButtonForEditMovie"
                                         className="backToList"
                                         style={{backgroundColor: "#f5c172"}}
                                         variant="contained"
@@ -456,7 +482,7 @@ const EditProject = () => {
                                             <DialogActions>
                                                 <Grid container spacing={2}>
                                                     <Grid container item xs={6} justify="center">
-                                                        <Button id="alertDialogButtonCancelForEditProject"
+                                                        <Button id="alertDialogButtonCancelForEditMovie"
                                                                 className={classes.dialogCancelButton}
                                                                 onClick={handleCloseBackToList}
                                                                 color="primary"
@@ -466,7 +492,7 @@ const EditProject = () => {
                                                     </Grid>
                                                     <Grid container item xs={6} justify="center">
                                                         <Button
-                                                            id="alertDialogButtonProceedForEditProject"
+                                                            id="alertDialogButtonProceedForEditMovie"
                                                             className={classes.dialogProceedButton}
                                                             href="./list"
                                                             color="primary"
@@ -488,26 +514,12 @@ const EditProject = () => {
     );
 }
 
-function formatDate(dateString) {
-    if (dateString === "") {
-        return dateString;
-    };
-
-    const dateArray = dateString.split("/");
-    const [day, month, year] = dateArray;
-    const newDate =  new Date(year, month-1, day);
-
-    const moment = require('moment');
-    const newDateFormat = moment(newDate).format('YYYY-MM-DD');
-    return newDateFormat;
-};
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TransitionEditProject = React.forwardRef(function Transition(props, ref) {
+const TransitionEditMovie = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default withRoot(EditProject);
+export default withRoot(EditMovie);

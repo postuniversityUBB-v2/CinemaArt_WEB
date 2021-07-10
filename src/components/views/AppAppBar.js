@@ -176,9 +176,9 @@ function AppAppBar(props) {
                                     variant="h6"
                                     underline="none"
                                     className={clsx(classes.rightLink, classes.linkSecondary)}
-                                    href="/logout"
+                                    href="/signout"
                                 >
-                                    {'Logout'}
+                                    {'Sign out'}
                             </Link>
                         </>
                     )
@@ -198,7 +198,7 @@ function AppAppBar(props) {
                                 variant="h6"
                                 underline="none"
                                 className={classes.rightLink}
-                                href="/login"
+                                href="/signIn"
                             >
                                 {'Sign In'}
                             </Link>
@@ -206,7 +206,7 @@ function AppAppBar(props) {
                                 variant="h6"
                                 underline="none"
                                 className={clsx(classes.rightLink, classes.linkSecondary)}
-                                href="/register"
+                                href="/signUp"
                             >
                                 {'Sign Up'}
                             </Link>

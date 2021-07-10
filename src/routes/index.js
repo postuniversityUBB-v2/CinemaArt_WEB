@@ -1,7 +1,7 @@
 import Index from '../pages/Home/Index';
-import Logout from "../pages/Logout/Logout";
-import Login from '../pages/Login/Login';
-import Register from '../pages/Register/Register';
+import SignOut from "../pages/SignOut/SignOut";
+import SignIn from '../pages/SignIn/SignIn';
+import SignUp from '../pages/SignUp/SignUp';
 import Terms from "../pages/Terms/Terms";
 import Privacy from "../pages/Privacy/Privacy";
 import About from "../pages/About/About";
@@ -28,9 +28,9 @@ const redirect = (from, to) => ({
 
 const baseRoutes = [
     exactRoutes("/home/index", Index),
-    exactRoutes("/logout", Logout),
-    exactRoutes("/login", Login),
-    exactRoutes("/register", Register),
+    exactRoutes("/signout", SignOut),
+    exactRoutes("/signIn", SignIn),
+    exactRoutes("/signUp", SignUp),
     exactRoutes("/terms", Terms),
     exactRoutes("/privacy", Privacy),
     exactRoutes("/about", About),

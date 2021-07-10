@@ -1,7 +1,4 @@
-import withRoot from '../../components/withRoot';
 import React, { useState, useEffect, forwardRef } from "react";
-import AppFooter from '../../components/views/AppFooter';
-import AppAppBar from '../../components/views/AppAppBar';
 import MaterialTable from "material-table"
 import {
 	Divider,
@@ -28,8 +25,6 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Redirect, useHistory } from "react-router-dom";
-import AssignmentIcon from "@material-ui/icons/Assignment"
-import RateReviewIcon from '@material-ui/icons/RateReview';
 import PropTypes from 'prop-types';
 import {  useTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -39,6 +34,9 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import TablePagination from '@material-ui/core/TablePagination';
 
+import AppFooter from '../../components/views/AppFooter';
+import AppAppBar from '../../components/views/AppAppBar';
+import withRoot from '../../components/withRoot';
 import { getReviewsForMovie } from "../../api/api";
 import { deleteReview } from "../../api/api";
 import LoadingSpinner from "../../components/components/LoadingSpinner";
@@ -77,7 +75,7 @@ const tableStyles = makeStyles({
 });
 
 const useStyles = makeStyles((theme) => ({
-    createTask: {
+    createReview: {
         backgroundColor: theme.palette.warning.main,
         '&:hover': {
             backgroundColor: theme.palette.warning.dark,
@@ -113,71 +111,70 @@ const useStyles1 = makeStyles((theme) => ({
 }));
 
 function TablePaginationActions(props) {
-const classes = useStyles1();
-const theme = useTheme();
-const { count, page, rowsPerPage, onChangePage } = props;
+	const classes = useStyles1();
+	const theme = useTheme();
+	const { count, page, rowsPerPage, onChangePage } = props;
 
-const handleFirstPageButtonClick = (event) => {
-	onChangePage(event, 0);
-};
+	const handleFirstPageButtonClick = (event) => {
+		onChangePage(event, 0);
+	};
 
-const handleBackButtonClick = (event) => {
-	onChangePage(event, page - 1);
-};
+	const handleBackButtonClick = (event) => {
+		onChangePage(event, page - 1);
+	};
 
-const handleNextButtonClick = (event) => {
-	onChangePage(event, page + 1);
-};
+	const handleNextButtonClick = (event) => {
+		onChangePage(event, page + 1);
+	};
 
-const handleLastPageButtonClick = (event) => {
-	onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-};
+	const handleLastPageButtonClick = (event) => {
+		onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+	};
 
-return (
-	<div className={classes.root}>
-	<IconButton
-		onClick={handleFirstPageButtonClick}
-		disabled={page === 0}
-		aria-label="first page"
-	>
-		{theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-	</IconButton>
-	<IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-		{theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-	</IconButton>
-	<IconButton
-		onClick={handleNextButtonClick}
-		disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-		aria-label="next page"
-	>
-		{theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-	</IconButton>
-	<IconButton
-		onClick={handleLastPageButtonClick}
-		disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-		aria-label="last page"
-	>
-		{theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-	</IconButton>
-	</div>
-);
+	return (
+		<div className={classes.root}>
+		<IconButton
+			onClick={handleFirstPageButtonClick}
+			disabled={page === 0}
+			aria-label="first page"
+		>
+			{theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+		</IconButton>
+		<IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
+			{theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+		</IconButton>
+		<IconButton
+			onClick={handleNextButtonClick}
+			disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+			aria-label="next page"
+		>
+			{theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+		</IconButton>
+		<IconButton
+			onClick={handleLastPageButtonClick}
+			disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+			aria-label="last page"
+		>
+			{theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+		</IconButton>
+		</div>
+	);
 }
 
 TablePaginationActions.propTypes = {
-count: PropTypes.number.isRequired,
-onChangePage: PropTypes.func.isRequired,
-page: PropTypes.number.isRequired,
-rowsPerPage: PropTypes.number.isRequired,
+	count: PropTypes.number.isRequired,
+	onChangePage: PropTypes.func.isRequired,
+	page: PropTypes.number.isRequired,
+	rowsPerPage: PropTypes.number.isRequired,
 };
 
 const handleDeleteReview = rowData => {
 	const fetchData = async () => {
 		try {
 			await deleteReview(rowData.id)
-			console.log("🚀 ~ file: ListTasks.js ~ line 65 ~ delete  task")
 			window.location.reload();
 		} catch (err) {
-			console.log(err)
+			return <Typography>Something went wrong...</Typography>
 		}
 	}
 	fetchData()
@@ -226,13 +223,11 @@ const ListReviews = () => {
 		const fetchData = async () => {
 			try {
 				const data = await getReviewsForMovie(idMovie);
-				console.log("🚀 ~ file: ListReviews.js ~ line 69 ~ data", data.entities[0].reviews);
 				setData(data.entities[0].reviews);
 				setTotalEntities(data.entities[0].reviews.length);
-
 				setIsLoading(false);
 			} catch (err) {
-				console.log(err);
+				return <Typography>Something went wrong...</Typography>
 			}
 		}
 		fetchData();
@@ -242,8 +237,7 @@ const ListReviews = () => {
 		return <Redirect to="/" />
 	}
 
-	const handleRedirectToEditReview = (rowData) =>{
-		console.log("🚀 ~ file: ListReviews.js ~ line 117 ~ handleRedirectToEditReview ~ rowData", rowData);		
+	const handleRedirectToEditReview = (rowData) =>{		
 		localStorage.setItem('movie', JSON.stringify(movie));
 		localStorage.setItem('review', JSON.stringify(rowData));
 
@@ -263,146 +257,140 @@ const ListReviews = () => {
         <React.Fragment>
             <AppAppBar />
             <div className="listEntities">
-			{isLoading ? (
-				<LoadingSpinner />
-			) : (				
-				<>
-					<div className="newEntity">
-						<Grid container spacing={1}>
-							<Grid container item xs={12} justify="flex-end">
-								<Typography variant="h4" className={classes.title}>
-									All reviews of {movieTitle}
-								</Typography>
-                                    <>
-                                        <Tooltip
-                                            title="Create new review"
-                                            arrow
-                                            TransitionComponent={Fade}
-                                            TransitionProps={{ timeout: 600 }}
-                                            placement="top"
-                                            aria-label="create new review"
-                                        >
-										<Fab
-											id="buttonToCreateTask"
-											className={classes.createTask}
-											aria-label="add new review"
-											onClick={handleRedirectToCreateReview}
+				{isLoading ? (
+					<LoadingSpinner />
+				) : (				
+					<>
+						<div className="newEntity">
+							<Grid container spacing={1}>
+								<Grid container item xs={12} justify="flex-end">
+									<Typography variant="h4" className={classes.title}>
+										All reviews of {movieTitle}
+									</Typography>
+										<>
+											<Tooltip
+												title="Create new review"
+												arrow
+												TransitionComponent={Fade}
+												TransitionProps={{ timeout: 600 }}
+												placement="top"
+												aria-label="create new review"
+											>
+											<Fab
+												id="buttonToCreateReview"
+												className={classes.createReview}
+												aria-label="add new review"
+												onClick={handleRedirectToCreateReview}
+											>
+												<AddIcon />
+											</Fab>
+										</Tooltip>
+									</>
+								</Grid>
+							</Grid>
+						</div>
+
+						<StyledDivider />
+						<MaterialTable
+							icons={tableIcons}
+							columns={[
+								{
+									title: "Text",
+									field: "text",
+									render: rowData => (
+										<div className={table.name}>{rowData.text}</div>
+									),
+									sortable: true,
+									defaultSort: "asc",
+									customSort: (a, b) => a?.title?.localeCompare(b?.title),
+								},
+								{
+									title: "Important",
+									field: "important",
+									render: rowData => (
+										<div className={table.name}>{rowData.important ? "Yes" : "No"}</div>
+									),
+									sortable: true,
+								},
+								{
+									title: "Date Added",
+									field: "dateTime",
+									render: rowData => formattedDate(rowData.dateTime),
+									sortable: true,
+									customFilterAndSearch: (searchValue, rowData) => handleSearchDate(searchValue, rowData.dateTime)
+								},
+							]}
+							data={data}
+							actions={ user?.role === "Admin" ? [
+								{
+									icon: () => <DeleteIcon />,
+									tooltip: 'Delete Review',
+									onClick: (event, rowData) => handleDeleteReview(rowData)
+								},
+								{
+									icon: () => <EditIcon />,
+									tooltip: 'Edit Review',
+									onClick: (event, rowData) => handleRedirectToEditReview(rowData)
+								}
+							] : [] }
+							options={{
+								search: false,
+								sorting: true,
+								rowStyle: () => {
+									return { backgroundColor: "#f7cc8e", fontSize: 14 }
+								},
+								headerStyle: {
+									fontWeight: "bold",
+									fontSize: 16,
+								},
+								emptyRowsWhenPaging: false,
+								draggable: false,
+								thirdSortClick: false,
+								showTitle: false,
+								paging: false,
+								padding: "default",
+							}}
+							localization={{
+								body: {
+									emptyDataSourceMessage: "No review found.",
+								},
+							}}
+						/>
+
+						<div className={classes.root}>
+							<Grid container spacing={3}>
+								<Grid item xs={12} sm={6}>
+									<TablePagination
+										rowsPerPageOptions={[5, 10, 20]}
+										colSpan={3}
+										count={totalEntities}
+										rowsPerPage={rowsPerPage}
+										page={page}
+										SelectProps={{
+											inputProps: { 'aria-label': 'rows per page' },
+											native: true,
+										}}
+										onChangePage={handleChangePage}
+										onChangeRowsPerPage={handleChangeRowsPerPage}
+										ActionsComponent={TablePaginationActions}
+									/>
+								</Grid>
+								<Grid item xs={12} sm={6}>
+									<Box className={`${classes.centerBox} ${classes.box}`}>
+										<Button
+											variant="contained"
+											color="default"
+											onClick={handleRedirectToMovies}
 										>
-											<AddIcon />
-										</Fab>
-                                    </Tooltip>
-                                </>
+											Back to Movies
+										</Button>
+									</Box>
+								</Grid>
 							</Grid>
-						</Grid>
-					</div>
-
-					<StyledDivider />
-					<MaterialTable
-						icons={tableIcons}
-						columns={[
-							{
-								title: "Text",
-								field: "text",
-								render: rowData => (
-									<div className={table.name}>{rowData.text}</div>
-								),
-								// searchable: true,
-								sortable: true,
-								defaultSort: "asc",
-								customSort: (a, b) => a?.title?.localeCompare(b?.title),
-							},
-							{
-								title: "Important",
-								field: "important",
-								render: rowData => (
-									<div className={table.name}>{rowData.important ? "Yes" : "No"}</div>
-								),
-								// searchable: true,
-								sortable: true,
-							},
-							{
-								title: "Date Added",
-								field: "dateTime",
-								render: rowData => formattedDate(rowData.dateTime),
-								// searchable: true,
-								sortable: true,
-								customFilterAndSearch: (searchValue, rowData) => handleSearchDate(searchValue, rowData.dateTime)
-							},
-						]}
-						data={data}
-						actions={ user?.role === "Admin" ? [
-							{
-								icon: () => <DeleteIcon />,
-								tooltip: 'Delete Review',
-								onClick: (event, rowData) => handleDeleteReview(rowData)
-							},
-							{
-								icon: () => <EditIcon />,
-								tooltip: 'Edit Review',
-								onClick: (event, rowData) => handleRedirectToEditReview(rowData)
-							}
-						] : [] }
-						options={{
-							search: false,
-							sorting: true,
-							rowStyle: () => {
-								return { backgroundColor: "#f7cc8e", fontSize: 14 }
-							},
-							headerStyle: {
-								fontWeight: "bold",
-								fontSize: 16,
-							},
-							emptyRowsWhenPaging: false,
-							draggable: false,
-							thirdSortClick: false,
-							showTitle: false,
-							paging: false,
-							padding: "default",
-						}}
-						localization={{
-							body: {
-								emptyDataSourceMessage: "No review found.",
-							},
-							// toolbar: {
-							// 	searchPlaceholder: "Search",
-							// },
-						}}
-					/>
-
-					<div className={classes.root}>
-						<Grid container spacing={3}>
-							<Grid item xs={12} sm={6}>
-								<TablePagination
-									rowsPerPageOptions={[5, 10, 20]}
-									colSpan={3}
-									count={totalEntities}
-									rowsPerPage={rowsPerPage}
-									page={page}
-									SelectProps={{
-										inputProps: { 'aria-label': 'rows per page' },
-										native: true,
-									}}
-									onChangePage={handleChangePage}
-									onChangeRowsPerPage={handleChangeRowsPerPage}
-									ActionsComponent={TablePaginationActions}
-								/>
-							</Grid>
-							<Grid item xs={12} sm={6}>
-								<Box className={`${classes.centerBox} ${classes.box}`}>
-									<Button
-										variant="contained"
-										color="default"
-										onClick={handleRedirectToMovies}
-									>
-										Back to Movies
-									</Button>
-								</Box>
-							</Grid>
-						</Grid>
-					</div>
-				</>
-			)}
-		</div>
+						</div>
+					</>
+				)}
+			</div>
             <AppFooter />
         </React.Fragment>
     );

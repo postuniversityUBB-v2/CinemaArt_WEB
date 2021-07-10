@@ -1,7 +1,5 @@
 import withRoot from '../../components/withRoot';
 import React, { useState, useRef } from 'react';
-import AppFooter from '../../components/views/AppFooter';
-import AppAppBar from '../../components/views/AppAppBar';
 import { useForm } from "react-hook-form";
 import { makeStyles, FormControl, TextField, Grid, Button, RootRef, Backdrop, MenuItem, Typography } from '@material-ui/core';
 import { Dialog, DialogActions, DialogContent, DialogContentText, Slide } from '@material-ui/core';
@@ -13,6 +11,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import { postMovies } from "../../api/api";
+import AppFooter from '../../components/views/AppFooter';
+import AppAppBar from '../../components/views/AppAppBar';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     keyboardDatePicker: {
         width: 240,
     },
-    dialogCreateProjectText: {
+    dialogCreateMovieText: {
         color: "black",
         fontWeight: 700,
         fontSize: 20,
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 70,
         marginLeft: 70,
     },
-    dialogCreateProjectNewProject: {
+    dialogCreateMovieNewMovie: {
         height: 36,
         borderRadius: 9,
         borderStyle: "solid",
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
         letterSpacing: 0,
         minWidth: 180,
     },
-    dialogCreateProjectBackToList: {
+    dialogCreateMovieBackToList: {
         height: 36,
         borderRadius: 9,
         backgroundColor: "#384A9C",
@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const CreateProject = () => {
+const CreateMovie = () => {
     const domRef = useRef();
     const classes = useStyles();
 
@@ -131,18 +131,19 @@ const CreateProject = () => {
 
     const movieGenre = ['Action', 'Documentary', 'Biography', 'Comedy', 'Adventure', 'Horror', 'History', 'SciFi', 'Animation', 'Thriller', 'Romance', 'Musical'];
     const [title, setTitle] = useState('');
-    const [titleError, setTitleError] = useState(false);
     const [genre, setGenre] = useState('');
     const [description, setDescription] = useState('');
-    const [descriptionError, setDescriptionError] = useState(false);
     const [durationInMinutes, setDurationInMinutes] = useState(1);
     const [yearOfRelease, setYearOfRelease] = useState(null);
     const [director, setDirector] = useState('');
     const [rating, setRating] = useState(1);
     const [watched, setWatched] = useState(false);
+
+    const [titleError, setTitleError] = useState(false);
+    const [descriptionError, setDescriptionError] = useState(false);
     
     const [openBackToList, isOpenBackToList] = useState(false);
-    const [openCreateProject, isOpenCreateProject] = useState(false);
+    const [openCreateMovie, isOpenCreateMovie] = useState(false);
 
     const handlePopUpBackToList = () => {
         isOpenBackToList(true);
@@ -156,8 +157,8 @@ const CreateProject = () => {
         isOpenBackToList(false);
     };
 
-    const handleCloseCreateProject = () => {
-        isOpenCreateProject(false);
+    const handleCloseCreateMovie = () => {
+        isOpenCreateMovie(false);
     };
 
     const handleChangeTitle = (event) => {
@@ -196,11 +197,17 @@ const CreateProject = () => {
         setTitle('');
         setGenre('');
         setDescription('');
+        setDurationInMinutes(1);
+        setYearOfRelease(null);
+        setDirector('');
+        setRating(1);
+        setWatched(false);
     }
 
     const { register, handleSubmit } = useForm();
     const onSubmit = (values, e) => {
         e.preventDefault();
+
         setTitleError(false);
         setDescriptionError(false);
 
@@ -223,9 +230,9 @@ const CreateProject = () => {
     
             try {
                 postMovies(payload);
-                isOpenCreateProject(true);
+                isOpenCreateMovie(true);
             } catch (err) {
-                console.log(err);
+                return <Typography>Something went wrong...</Typography>
             }
 
         }
@@ -241,10 +248,10 @@ const CreateProject = () => {
                             <FormControl id="titleForm" className={classes.formControl}>
                                 <TextField
                                     error={titleError}
+                                    required
                                     id="title"
                                     type="text"
                                     name="title"
-                                    required
                                     value={title}                                    
                                     {...register("title")}
                                     onChange={handleChangeTitle}
@@ -282,12 +289,12 @@ const CreateProject = () => {
                             <FormControl id="descriptionForm" className={classes.formControl}>
                                 <TextField
                                     error={descriptionError}
+                                    required
                                     id="description"
                                     type="text"
                                     multiline
                                     rowsMax={3}
                                     name="description"
-                                    required
                                     value ={description}
                                     {...register("description")}
                                     onChange={handleChangeDescription}
@@ -383,7 +390,7 @@ const CreateProject = () => {
                             <Grid container spacing={1}>
                                 <Grid container item xs={12} justify="center">
                                     <Button
-                                        id="submitCreateProject"
+                                        id="submitCreateMovie"
                                         className="inactive-button"
                                         style={{backgroundColor: "#f5c172"}}
                                         component={SubmitButton}
@@ -394,27 +401,27 @@ const CreateProject = () => {
                                     >
                                         Create Movie
                                     </Button>
-                                    <Backdrop open={openCreateProject} onClose={handleCloseCreateProject} elevation={18}>
+                                    <Backdrop open={openCreateMovie} onClose={handleCloseCreateMovie} elevation={18}>
                                         <Dialog
-                                            open={openCreateProject}
-                                            TransitionComponent={TransitionCreateProject}
+                                            open={openCreateMovie}
+                                            TransitionComponent={TransitionCreateMovie}
                                             keepMounted
-                                            aria-describedby="New project created!"
+                                            aria-describedby="New movie created!"
                                             disableBackdropClick
                                         >
                                             <DialogContent>
-                                                <DialogContentText id="alertDialogDescriptionNewProject" className={classes.dialogCreateProjectText}>
+                                                <DialogContentText id="alertDialogDescriptionNewMovie" className={classes.dialogCreateMovieText}>
                                                     New movie successfully created!
                                                 </DialogContentText>
                                             </DialogContent>
                                             <DialogActions>
                                                 <Grid container spacing={2}>
                                                         <Grid container item xs={6} justify="center">
-                                                            <Button id="alertDialogButtonNewProjectForBacktoList"
-                                                                    className={classes.dialogCreateProjectNewProject}
+                                                            <Button id="alertDialogButtonNewMovieForBacktoList"
+                                                                    className={classes.dialogCreateMovieNewMovie}
                                                                     onClick={() => {
                                                                         handleReset();
-                                                                        handleCloseCreateProject();
+                                                                        handleCloseCreateMovie();
                                                                     }}
                                                                     color="primary"
                                                             >
@@ -423,7 +430,7 @@ const CreateProject = () => {
                                                         </Grid>
                                                         <Grid container item xs={6} justify="center">
                                                             <Button id="alertDialogButtonBackToListForBackToList"
-                                                                    className={classes.dialogCreateProjectBackToList}
+                                                                    className={classes.dialogCreateMovieBackToList}
                                                                     href="./list"
                                                                     style={{backgroundColor: "#f5c172"}}
                                                             >
@@ -438,7 +445,7 @@ const CreateProject = () => {
 
                                 <Grid container item xs={12} justify="center">
                                     <Button
-                                        id="alertDialogButtonForCreateProject"
+                                        id="alertDialogButtonForCreateMovie"
                                         className="backToList"
                                         style={{backgroundColor: "#f5c172"}}
                                         variant="contained"
@@ -473,7 +480,7 @@ const CreateProject = () => {
                                             <DialogActions>
                                                 <Grid container spacing={2}>
                                                     <Grid container item xs={6} justify="center">
-                                                        <Button id="alertDialogButtonCancelForCreatProject"
+                                                        <Button id="alertDialogButtonCancelForCreatMovie"
                                                                 className={classes.dialogCancelButton}
                                                                 onClick={handleCloseBackToList}
                                                                 color="primary"
@@ -483,7 +490,7 @@ const CreateProject = () => {
                                                     </Grid>
                                                     <Grid container item xs={6} justify="center">
                                                         <Button
-                                                            id="alertDialogButtonProceedForCreateProject"
+                                                            id="alertDialogButtonProceedForCreateMovie"
                                                             className={classes.dialogProceedButton}
                                                             href="./list"
                                                             color="primary"
@@ -504,33 +511,13 @@ const CreateProject = () => {
         </React.Fragment>
     );
 }
-function formatDate(dateString) {
-    if (dateString === "") {
-        return dateString;
-    };
-
-    const dateArray = dateString.split("/");
-    const [day, month, year] = dateArray;
-    const newDate =  new Date(year, month-1, day);
-
-    const moment = require('moment');
-    const newDateFormat = moment(newDate).format('YYYY-MM-DD');
-    return newDateFormat;
-};
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TransitionCreateProject = React.forwardRef(function Transition(props, ref) {
+const TransitionCreateMovie = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default withRoot(CreateProject);
-// export default function withRoot(CreateProject) {
-//     return (
-//         <SnackbarProvider maxSnack={1}>
-//             <CreateProjectPage />
-//         </SnackbarProvider>
-//     );
-// };
+export default withRoot(CreateMovie);

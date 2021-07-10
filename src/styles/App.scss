@@ -1,0 +1,104 @@
+@import '../styles/global.scss';
+
+/* Application body */
+body {
+	background-color: $white;
+}
+
+/* Navigation bar */
+.navigationLink {
+	text-align: center;
+	letter-spacing: 0.4px;
+	font-family: OpenSans-Regular;
+	font-size: 20px;
+	color: $lightGrey;
+	opacity: 1;
+	padding: 20px 0px 20px 0px;
+	display: block;
+}
+
+.navigationLink:link {
+	text-decoration: none;
+}
+
+.navigationLink:hover {
+	text-decoration: underline;
+	font-family: OpenSans-Bold;
+	font-size: 22px;
+}
+
+.clearIcon {
+	color: $lightGrey;
+	top: 31px;
+	left: 218px;
+	width: 40px;
+	height: 40px;
+}
+
+.companyLogo {
+	width: 240px;
+	height: 50px;
+	border-radius: 10px;
+}
+
+.toolBar {
+	background-color: $lightGrey;
+	box-shadow: 1px 1px 1px 8px rgba(235, 240, 249, 1);
+	padding-top: 5px;
+}
+
+.listEntities {
+	margin: 70px 30px 20px 30px;
+	padding: 10px 40px 60px 40px;
+	background-color: $white;
+}
+
+.contact {
+	margin: 80px 0px;
+	background-color: $white;
+}
+
+.newEntity {
+	margin-bottom: 16px;
+}
+
+.newEntity .inactive-button:hover {
+	background-color: $dark-blue;
+	color: $white;
+}
+
+.loadingIcons {
+	margin-top: 300px;
+	color: '#f5c172';
+}
+
+.createEntity {
+	margin: 50px 30px 0px 30px;
+	padding: 10px 40px 0px 40px;
+	background-color: $white;
+}
+
+.createEntity .header {
+	color: '#f5c172';
+	font-size: 26px;
+	padding: 0px 0px 30px 8px;
+}
+
+.createEntity .inactive-button {
+	width: 350px;
+	border-radius: 7px;
+	margin: 0px 0px 10px 0px;
+	background-color: '#f5c172';
+}
+
+.createEntity .backToList {
+	width: 350px;
+	border-radius: 7px;
+	margin: 0px 0px 40px 0px;
+}
+
+.createEntity .reviewbackToList {
+	width: 350px;
+	border-radius: 7px;
+	margin: 0px 0px 120px 0px;
+}
