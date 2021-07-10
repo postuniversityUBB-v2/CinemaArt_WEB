@@ -273,7 +273,6 @@ const ListReviews = () => {
 								<Typography variant="h4" className={classes.title}>
 									All reviews of {movieTitle}
 								</Typography>
-								{user?.role === "Admin" ? (
                                     <>
                                         <Tooltip
                                             title="Create new review"
@@ -283,17 +282,16 @@ const ListReviews = () => {
                                             placement="top"
                                             aria-label="create new review"
                                         >
-                                            <Fab
-                                                id="buttonToCreateTask"
-                                                className={classes.createTask}
-                                                aria-label="add new review"
-                                                onClick={handleRedirectToCreateReview}
-                                            >
-                                                <AddIcon />
-                                            </Fab>
-                                        </Tooltip>
-                                    </>
-								) : null}
+										<Fab
+											id="buttonToCreateTask"
+											className={classes.createTask}
+											aria-label="add new review"
+											onClick={handleRedirectToCreateReview}
+										>
+											<AddIcon />
+										</Fab>
+                                    </Tooltip>
+                                </>
 							</Grid>
 						</Grid>
 					</div>

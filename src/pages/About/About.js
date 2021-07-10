@@ -1,5 +1,5 @@
 import withRoot from '../../components/withRoot';
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -37,11 +37,11 @@ function About() {
         Items: [
             {
                 Name: "",
-                Image: '/style/images/passion.jpg'
+                Image: '/style/images/movies_23.jpg'
             },
             {
                 Name: "",
-                Image: '/style/images/teamwork.jpg'
+                Image: '/style/images/movies_22.jpg'
             }
         ]
     };
@@ -56,14 +56,13 @@ function About() {
                             <CardActionArea>
                                 <CardContent>
                                     <Typography gutterBottom variant="subtitle1" component="h2" color="primary">
-                                        The power of teamwork
+                                        Movie
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" component="p">
-                                        Behind every great human achievement, there is a team.
+                                        Type of visual communication which uses moving pictures and sound to tell stories or teach people something.
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" component="p">
-                                        From medicine and space travel, to disaster response and pizza deliveries, our products help teams all over the planet advance humanity through the power of software.
-                                        Our mission is to help unleash the potential of every team.
+                                        Most people watch (view) movies as a type of entertainment or a way to have fun. For some people, fun movies can mean movies that make them laugh, while for others it can mean movies that make them cry, or feel afraid. 
                                     </Typography>
                                 </CardContent>
                                 <CardMedia
@@ -79,13 +78,13 @@ function About() {
                             <CardActionArea>
                                 <CardContent>
                                     <Typography gutterBottom variant="subtitle1" component="h2" color="primary">
-                                        Values to live by
+                                        Genre
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" component="p">
-                                        Our unique values describe, at the most fundamental level, what we stand for.
+                                        Type of movie or a style of movie. Movies can be fictional (made up), or documentary (showing 'real life'), or a mix of the two.
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" component="p">
-                                        These five values shape our culture, influence who we are, what we do, and even who we hire. They're hard-wired into our DNA and will stay the same as we continue to grow.
+                                        Although hundreds of movies are made every year, there are very few that do not follow a small number of set plots, or stories. Some movies mix together two or more genres. 
                                     </Typography>
                                 </CardContent>
                                 <CardMedia

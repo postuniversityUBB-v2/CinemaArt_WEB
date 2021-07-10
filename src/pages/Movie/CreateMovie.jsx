@@ -131,8 +131,10 @@ const CreateProject = () => {
 
     const movieGenre = ['Action', 'Documentary', 'Biography', 'Comedy', 'Adventure', 'Horror', 'History', 'SciFi', 'Animation', 'Thriller', 'Romance', 'Musical'];
     const [title, setTitle] = useState('');
+    const [titleError, setTitleError] = useState(false);
     const [genre, setGenre] = useState('');
     const [description, setDescription] = useState('');
+    const [descriptionError, setDescriptionError] = useState(false);
     const [durationInMinutes, setDurationInMinutes] = useState(1);
     const [yearOfRelease, setYearOfRelease] = useState(null);
     const [director, setDirector] = useState('');
@@ -199,18 +201,33 @@ const CreateProject = () => {
     const { register, handleSubmit } = useForm();
     const onSubmit = (values, e) => {
         e.preventDefault();
-        const payload = {
-            ...values
-        };
-        payload.dateAdded = new Date();
-        payload.watched = watched === true ? true : false;
-        console.log(payload);
+        setTitleError(false);
+        setDescriptionError(false);
 
-        try {
-            postMovies(payload);
-            isOpenCreateProject(true);
-        } catch (err) {
-            console.log(err);
+        if (title === "") {
+            setTitleError(true);
+        }
+
+        if (description.length < 10) {
+            setDescriptionError(true);
+        }
+
+        if (title && description && rating >= 1) {
+            const payload = {
+                ...values
+            };
+            payload.dateAdded = new Date();
+            payload.watched = watched === true ? true : false;
+            payload.rating = rating;
+            console.log(payload);
+    
+            try {
+                postMovies(payload);
+                isOpenCreateProject(true);
+            } catch (err) {
+                console.log(err);
+            }
+
         }
     }
 
@@ -223,16 +240,19 @@ const CreateProject = () => {
                         <form onSubmit={handleSubmit(onSubmit)} autocomplete="off" noValidate>
                             <FormControl id="titleForm" className={classes.formControl}>
                                 <TextField
+                                    error={titleError}
                                     id="title"
                                     type="text"
                                     name="title"
-                                    value={title}
+                                    required
+                                    value={title}                                    
                                     {...register("title")}
                                     onChange={handleChangeTitle}
                                     className={classes.textField}
                                     label="Title"
                                     placeholder="Title"
                                     InputLabelProps={{shrink: true,}}
+                                    helperText={titleError ? "Title is required" : ""}
                                 />
                             </FormControl>
 
@@ -243,7 +263,7 @@ const CreateProject = () => {
                                     name="genre"
                                     {...register("genre")}
                                     select
-                                    label="Genre"
+                                    label="Genre"                                    
                                     value ={genre}
                                     onChange={handleChangeGenre}    
                                     className={classes.textField}                    
@@ -261,11 +281,13 @@ const CreateProject = () => {
 
                             <FormControl id="descriptionForm" className={classes.formControl}>
                                 <TextField
+                                    error={descriptionError}
                                     id="description"
                                     type="text"
                                     multiline
                                     rowsMax={3}
                                     name="description"
+                                    required
                                     value ={description}
                                     {...register("description")}
                                     onChange={handleChangeDescription}
@@ -273,6 +295,7 @@ const CreateProject = () => {
                                     label="Description"
                                     placeholder="Description"
                                     InputLabelProps={{shrink: true,}}
+                                    helperText={descriptionError ? "Description must have at least 10 characters" : ""}
                                 />
                             </FormControl>
 
