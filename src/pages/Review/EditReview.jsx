@@ -1,9 +1,8 @@
-import withRoot from '../../components/withRoot';
 import { useHistory } from "react-router-dom";
 import React, { useState, useRef } from "react";
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
-import { useForm } from "react-hook-form"
+import { useForm } from "react-hook-form";
 import {
 	makeStyles,
 	FormControl,
@@ -12,26 +11,22 @@ import {
 	Button,
 	RootRef,
 	Backdrop,
-	Select,
     Typography
-} from "@material-ui/core"
+} from "@material-ui/core";
 import {
 	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogContentText,
 	Slide,
-	MenuItem,
-} from "@material-ui/core"
-import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers"
-import DateFnsUtils from "@date-io/date-fns"
-import "date-fns"
+} from "@material-ui/core";
+import "date-fns";
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import SelectUsers from "../../components/form/SelectUsers"
-import { editReview } from "../../api/api"
+import withRoot from '../../components/withRoot';
+import { editReview } from "../../api/api";
 
 const useStyles = makeStyles(theme => ({
 	formControl: {
@@ -45,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 	keyboardDatePicker: {
 		width: 380,
 	},
-	dialogCreateTaskText: {
+	dialogCreateReviewText: {
 		color: "#f5c172",
 		fontWeight: 700,
 		fontSize: 20,
@@ -54,7 +49,7 @@ const useStyles = makeStyles(theme => ({
 		marginRight: 70,
 		marginLeft: 70,
 	},
-	dialogCreateTaskNewTask: {
+	dialogCreateReviewNewReview: {
 		height: 36,
 		borderRadius: 9,
 		borderStyle: "solid",
@@ -67,7 +62,7 @@ const useStyles = makeStyles(theme => ({
 		letterSpacing: 0,
 		minWidth: 180,
 	},
-	dialogCreateTaskBackToList: {
+	dialogCreateReviewBackToList: {
 		height: 36,
 		borderRadius: 9,
 		backgroundColor: "#f5c172",
@@ -141,67 +136,29 @@ const useStyles = makeStyles(theme => ({
         paddingBottom: theme.spacing(6),
     }
 }))
-const taskStatuses = [
-	{
-		value: "DEV_ON_DESK",
-		label: "Dev on desk",
-	},
-	{
-		value: "DEV_IN_PROGRESS",
-		label: "Dev in progress",
-	},
-	{
-		value: "TESTING",
-		label: "Testing",
-	},
-	{
-		value: "CANCELLED",
-		label: "Cancelled",
-	},
-	{
-		value: "COMPLETED",
-		label: "Completed",
-	},
-]
-
-const handleFormat = taskStatus => {
-	const value = taskStatuses.filter(
-		obj => obj.label.toLowerCase() === taskStatus
-	)[0]?.value
-	return value
-}
 
 const EditReview = () => {
     let review = {};
 	let movie = {};
-	if (localStorage && localStorage.getItem('task') && localStorage.getItem('movie')) {
+	if (localStorage && localStorage.getItem('review') && localStorage.getItem('movie')) {
 		review = JSON.parse(localStorage.getItem('review'));
 		movie = JSON.parse(localStorage.getItem('movie'));
 	}
-	const movieTitle = movie.title;
-    console.log("🚀 ~ file: EditTask.jsx ~ line 166 ~ EditTaskPage ~ projectTitle", movieTitle)   
+	const movieTitle = movie.title; 
 	
     const [text, setText] = useState(review?.text);
     const [important, setImportant] = useState(review?.important);
 
-	const [openBackToList, isOpenBackToList] = useState(false)
-	const [openCreateTask, isOpenCreateTask] = useState(false)
-	const { register, handleSubmit } = useForm()
-	const domRef = useRef()
-	const classes = useStyles()
+	const [openCreateReview, isOpenCreateReview] = useState(false);
+
+	const { register, handleSubmit } = useForm();
+	const domRef = useRef();
+	const classes = useStyles();
 
 	const SubmitButton = props => <button {...props} type="submit" />
 
-	const handlePopUpBackToList = () => {
-		isOpenBackToList(true)
-	}
-
-	const handleCloseBackToList = () => {
-		isOpenBackToList(false)
-	}
-
-	const handleCloseCreateTask = () => {
-        isOpenCreateTask(false);
+	const handleCloseCreateReview = () => {
+        isOpenCreateReview(false);
     };
 	
     const history = useHistory()
@@ -227,18 +184,14 @@ const EditReview = () => {
         setImportant('');
     }
 
-	const handleRedirectToListTask = () => {
-		isOpenCreateTask(false)
-		// window.history.push({
-		// 	pathname:"/task/list",
-		// 	search:`?project=${projectTitle}`,
-		// 	state:{projectTitle: projectTitle}
-		// })
+	const handleRedirectToListReview = () => {
+		isOpenCreateReview(false)
 		window.history.back()
 	}
 
 	const onSubmit = async (values, e) => {
         e.preventDefault();
+
         const payload = {
             ...values
         };
@@ -248,9 +201,9 @@ const EditReview = () => {
 
         try {
             editReview(movie.id, review.id, payload);
-            isOpenCreateTask(true);
+            isOpenCreateReview(true);
         } catch (err) {
-            console.log(err);
+            return <Typography>Something went wrong...</Typography>
         }
 	}
 
@@ -297,7 +250,7 @@ const EditReview = () => {
                         <Grid container spacing={1}>
                             <Grid container item xs={12} justify="center">
                                 <Button
-                                    id="submitCreateTask"
+                                    id="submitCreateReview"
                                     className="inactive-button"
                                     style={{backgroundColor: "#f5c172"}}
                                     component={SubmitButton}
@@ -309,21 +262,21 @@ const EditReview = () => {
                                     Edit Review
                                 </Button>
                                 <Backdrop
-                                    open={openCreateTask}
-                                    onClose={handleCloseCreateTask}
+                                    open={openCreateReview}
+                                    onClose={handleCloseCreateReview}
                                     elevation={18}
                                 >
                                     <Dialog
-                                        open={openCreateTask}
-                                        TransitionComponent={TransitionCreateTask}
+                                        open={openCreateReview}
+                                        TransitionComponent={TransitionCreateReview}
                                         keepMounted
-                                        aria-describedby="New task created!"
+                                        aria-describedby="New review created!"
                                         disableBackdropClick
                                     >
                                         <DialogContent>
                                             <DialogContentText
-                                                id="alertDialogDescriptionNewTask"
-                                                className={classes.dialogCreateTaskText}
+                                                id="alertDialogDescriptionNewReview"
+                                                className={classes.dialogCreateReviewText}
                                             >
                                                 Review edited successfully!
                                             </DialogContentText>
@@ -331,11 +284,11 @@ const EditReview = () => {
                                         <DialogActions>
                                         <Grid container spacing={2}>
                                             <Grid container item xs={6} justify="center">
-                                                <Button id="alertDialogButtonNewTaskForBacktoList"
-                                                    className={classes.dialogCreateTaskNewTask}
+                                                <Button id="alertDialogButtonNewReviewForBacktoList"
+                                                    className={classes.dialogCreateReviewNewReview}
                                                     onClick={() => {
                                                         handleReset();
-                                                        handleCloseCreateTask();
+                                                        handleCloseCreateReview();
                                                     }}
                                                     color="primary"
                                                 >
@@ -344,7 +297,7 @@ const EditReview = () => {
                                             </Grid>
                                             <Grid container item xs={6} justify="center">
                                                 <Button id="alertDialogButtonBackToListForBackToList"
-                                                    className={classes.dialogCreateTaskBackToList}
+                                                    className={classes.dialogCreateReviewBackToList}
                                                     onClick={handleRedirectToListReviews}
                                                     color="primary"
                                                 >
@@ -359,13 +312,13 @@ const EditReview = () => {
 
                             <Grid container item xs={12} justify="center">
                                 <Button
-                                    id="alertDialogButtonForCreateTask"
+                                    id="alertDialogButtonForCreateReview"
                                     className="backToList"
                                     style={{backgroundColor: "#f5c172"}}
                                     variant="contained"
                                     color="primary"
                                     size="large"
-                                    onClick={handleRedirectToListTask}
+                                    onClick={handleRedirectToListReview}
                                 >
                                     Back to list
                                 </Button>							
@@ -379,25 +332,7 @@ const EditReview = () => {
     );
 }
 
-function formatDate(dateString) {
-	if (dateString === "") {
-		return dateString
-	}
-
-	const dateArray = dateString.split("/")
-	const [day, month, year] = dateArray
-	const newDate = new Date(year, month - 1, day)
-
-	const moment = require("moment")
-	const newDateFormat = moment(newDate).format("YYYY-MM-DD")
-	return newDateFormat
-}
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-	return <Slide direction="up" ref={ref} {...props} />
-})
-
-const TransitionCreateTask = React.forwardRef(function Transition(props, ref) {
+const TransitionCreateReview = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />
 })
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import withRoot from '../../components/withRoot';
-import ProductCategories from '../../components/views/ProductCategories';
-import ProductSmokingHero from '../../components/views/ProductSmokingHero';
+import ProductCategories from '../../components/views/MovieGenre';
+import ProductSmokingHero from '../../components/views/ContactUs';
 import AppFooter from '../../components/views/AppFooter';
-import ProductHero from '../../components/views/ProductHero';
-import ProductValues from '../../components/views/ProductValues';
-import ProductHowItWorks from '../../components/views/ProductHowItWorks';
-import ProductCTA from '../../components/views/ProductCTA';
+import ProductHero from '../../components/views/Carousel';
+import ProductValues from '../../components/views/MovieValues';
+import ProductHowItWorks from '../../components/views/HowItWorks';
+import ProductCTA from '../../components/views/MovieOffers';
 import AppAppBar from '../../components/views/AppAppBar';
 
 const Index = () => {

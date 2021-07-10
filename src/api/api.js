@@ -10,7 +10,7 @@ export const getMovies = async (page, perPage) => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 5 ~ getMovies ~ response", data)
+
 		return data
 	} catch (err) {
 		throw err
@@ -24,7 +24,7 @@ export const postMovies = async payload => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 17 ~ postMovies")
+
 		return
 	} catch (err) {
 		throw err
@@ -38,7 +38,7 @@ export const postMovieToWatchlist = async payload => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 17 ~ postMovies")
+
 		return
 	} catch (err) {
 		throw err
@@ -52,7 +52,7 @@ export const editMovie = async (id, payload) => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 36 ~ editMovie")
+
 		return status;
 	} catch (err) {
 		throw err
@@ -66,7 +66,7 @@ export const editReview = async (movieId, reviewId, payload) => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 36 ~ editReview")
+
 		return status;
 	} catch (err) {
 		throw err
@@ -80,7 +80,7 @@ export const deleteMovie = async id => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 50 ~ deleteMovie")
+
 		return status;
 	} catch (err) {
 		throw err
@@ -95,7 +95,7 @@ export const deleteReview = async reviewId => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 50 ~ deleteReview")
+
 		return status;
 	} catch (err) {
 		throw err
@@ -109,7 +109,7 @@ export const deleteWatchlistMovie = async id => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 50 ~ deleteWatchlistMovie")
+
 		return status;
 	} catch (err) {
 		throw err
@@ -123,7 +123,7 @@ export const getReviewsForMovie = async idMovie => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 64 ~ getTasksForProject")
+
 		return data;
 	} catch (err) {
 		throw err
@@ -137,7 +137,7 @@ export const postReview = async (movieId, payload) => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 78 ~ postReview")
+
 		return
 	} catch (err) {
 		throw err
@@ -151,7 +151,7 @@ export const getUsers = async () => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 106 ~ getUsers ~ response", data)
+
 		return data
 	} catch (err) {
 		throw err
@@ -165,7 +165,7 @@ export const getWatchlists = async (page, perPage) => {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		console.log("🚀 ~ file: api.js ~ line 106 ~ getWatchlist ~ response", data)
+
 		return data
 	} catch (err) {
 		throw err
@@ -175,7 +175,6 @@ export const getWatchlists = async (page, perPage) => {
 export const register = async payload => {
 	try {
 		const { status } = await axios.post(`${API_URL}/Authentication/register`, payload)
-		console.log("🚀 ~ file: api.js ~ line 120 ~ register ~ response", status)
 
 		return status
 	} catch (err) {
@@ -183,10 +182,9 @@ export const register = async payload => {
 	}
 }
 
-export const login = async payload => {
+export const signIn = async payload => {
 	try {
 		const { data, status } = await axios.post(`${API_URL}/Authentication/login`, payload)
-		console.log("🚀 ~ file: api.js ~ line 131 ~ login ~ response", data, status)
 
 		return { data, status }
 	} catch (err) {

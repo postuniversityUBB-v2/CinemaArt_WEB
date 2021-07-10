@@ -1,4 +1,3 @@
-import withRoot from '../../components/withRoot';
 import React, { useState, useEffect, forwardRef } from "react"
 import { Redirect, useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
@@ -38,6 +37,7 @@ import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import LastPageIcon from '@material-ui/icons/LastPage';
 
+import withRoot from '../../components/withRoot';
 import AppFooter from '../../components/views/AppFooter';
 import AppAppBar from '../../components/views/AppAppBar';
 import { getMovies, deleteMovie, postMovieToWatchlist } from "../../api/api"
@@ -78,7 +78,7 @@ const tableStyles = makeStyles({
 });
 
 const useStyles = makeStyles((theme) => ({
-    createProject: {
+    createMovie: {
         backgroundColor: theme.palette.warning.main,
         '&:hover': {
             backgroundColor: theme.palette.warning.dark,
@@ -149,20 +149,20 @@ return (
 }
 
 TablePaginationActions.propTypes = {
-count: PropTypes.number.isRequired,
-onChangePage: PropTypes.func.isRequired,
-page: PropTypes.number.isRequired,
-rowsPerPage: PropTypes.number.isRequired,
+    count: PropTypes.number.isRequired,
+    onChangePage: PropTypes.func.isRequired,
+    page: PropTypes.number.isRequired,
+    rowsPerPage: PropTypes.number.isRequired,
 };
 
 const ListMovies = () => {
 	const table = tableStyles();
     const classes = useStyles();
 
-	const [isLoading, setIsLoading] = useState(true)
-	const [data, setData] = useState([])
-	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")))
-	const history = useHistory()
+	const [isLoading, setIsLoading] = useState(true);
+	const [data, setData] = useState([]);
+	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+	const history = useHistory();
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -190,22 +190,16 @@ const ListMovies = () => {
 		localStorage.setItem('movie', JSON.stringify(rowData));       
 
         const watchlistDateAdded = new Date();
-        console.log("watchlistDateAdded", watchlistDateAdded);
         const payload = {
             watchlistMovieIds: [rowData.id],
             watchlistDateAdded: watchlistDateAdded.toISOString()
         };
-        console.log(payload);
 
         try {
             postMovieToWatchlist(payload);
-            // window.location.reload();
         } catch (err) {
-            console.log(err);
+            return <Typography>Something went wrong...</Typography>
         }
-		// history.push({
-		// 	pathname: "/watchlist/list"
-		// })
 	}
 
 	const handleRedirectToEditMovie = rowData => {		
@@ -221,10 +215,9 @@ const ListMovies = () => {
 		const fetchData = async () => {
 			try {
 				await deleteMovie(rowData.id)
-				console.log("🚀 ~ file: DeleteMovie.js ~ line 69 ~ data")
 				window.location.reload();
 			} catch (err) {
-				console.log(err)
+				return <Typography>Something went wrong...</Typography>
 			}
 		}
 		fetchData()
@@ -234,10 +227,8 @@ const ListMovies = () => {
 		const fetchData = async () => {
 			try {
 				const rows = await getMovies(page+1, rowsPerPage)
-				console.log("🚀 ~ file: ListProjects.js ~ line 69 ~ data", rows.entities.yearOfRelease)
 				setData(rows.entities)
                 setTotalEntities(rows.totalEntities);
-
 				setIsLoading(false)
 			} catch (err) {
 				console.log(err)
@@ -275,10 +266,10 @@ const ListMovies = () => {
                                                 aria-label="create new movie"
                                             >
                                                 <Fab
-                                                    id="buttonToCreateProject"
+                                                    id="buttonToCreateMovie"
                                                     aria-label="add new movie"
                                                     href="/movie/create"
-                                                    className={classes.createProject}
+                                                    className={classes.createMovie}
                                                 >
                                                     <AddIcon />
                                                 </Fab>
@@ -328,43 +319,36 @@ const ListMovies = () => {
                                     render: rowData => (
                                         <div className={table.name}>{rowData.description}</div>
                                     ),
-                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
                                     title: "Director",
                                     field: "director",
                                     render: rowData => rowData.director,
-                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
                                     title: "Date Added",
                                     field: "dateAdded",
                                     render: rowData => formattedDate(rowData.dateAdded),
-                                    // searchable: true,
                                     sortable: true,
-                                    // customFilterAndSearch: (searchValue, rowData) => handleSearchDate(searchValue, rowData.dateAdded)
                                 },
                                 {
                                     title: "Duration",
                                     field: "durationInMinutes",
                                     render: rowData => rowData.durationInMinutes,
-                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
                                     title: "Rating",
                                     field: "rating",
                                     render: rowData => rowData.rating,
-                                    // searchable: true,
                                     sortable: true,
                                 },
                                 {
                                     title: "Watched",
                                     field: "watched",
                                     render: rowData => rowData.watched ? "Yes" : "No",
-                                    // searchable: true,
                                     sortable: true,
                                 },
                             ]}
@@ -424,11 +408,6 @@ const ListMovies = () => {
                                 }
                             ]}
                             options={{
-                                // selection: true,
-                                // selectionProps: rowData => ({
-                                //   disabled: rowData.title === 'Mehmet',
-                                //   color: 'primary'
-                                // }),
                                 search: false,
                                 sorting: true,
                                 rowStyle: () => {
@@ -449,9 +428,6 @@ const ListMovies = () => {
                                 body: {
                                     emptyDataSourceMessage: "No movie found.",
                                 },
-                                // toolbar: {
-                                //     searchPlaceholder: "Search",
-                                // },
                             }}
                         />
                         <TablePagination
@@ -486,13 +462,5 @@ function formattedDate(date) {
 		sliceDate.slice(8, 10) + "/" + date.slice(5, 7) + "/" + date.slice(0, 4)
 	)
 }
-
-function handleSearchDate(searchValue, rowData) {
-    var date = formattedDate(rowData);
-    if (date.indexOf(searchValue) !== -1) {
-        return true;
-    }
-    return false;
-};
 
 export default withRoot(ListMovies);

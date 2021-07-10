@@ -1,20 +1,17 @@
-import withRoot from '../../components/withRoot';
 import React, { useState, useRef, useEffect } from 'react';
-import AppFooter from '../../components/views/AppFooter';
-import AppAppBar from '../../components/views/AppAppBar';
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { makeStyles, FormControl, TextField, Grid, Button, RootRef, Backdrop, Typography } from '@material-ui/core';
-import { Dialog, DialogActions, DialogContent, DialogContentText, Slide, MenuItem } from '@material-ui/core';
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { Dialog, DialogActions, DialogContent, DialogContentText, Slide } from '@material-ui/core';
 import 'date-fns';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+import withRoot from '../../components/withRoot';
 import { postReview } from "../../api/api";
-import SelectUsers from '../../components/form/SelectUsers';
+import AppFooter from '../../components/views/AppFooter';
+import AppAppBar from '../../components/views/AppAppBar';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -28,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     keyboardDatePicker: {
         width: 560,
     },
-    dialogCreateTaskText: {
+    dialogCreateReviewText: {
         color: "#f5c172",
         fontWeight: 700,
         fontSize: 20,
@@ -37,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 70,
         marginLeft: 70,
     },
-    dialogCreateTaskNewTask: {
+    dialogCreateReviewNewReview: {
         height: 36,
         borderRadius: 9,
         borderStyle: "solid",
@@ -50,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
         letterSpacing: 0,
         minWidth: 180,
     },
-    dialogCreateTaskBackToList: {
+    dialogCreateReviewBackToList: {
         height: 36,
         borderRadius: 9,
         backgroundColor: "#f5c172",
@@ -125,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const CreateTask = () => {
+const CreateReview = () => {
     const domRef = useRef();
     const classes = useStyles();
 
@@ -134,9 +131,6 @@ const CreateTask = () => {
         movie = JSON.parse(localStorage.getItem('movie'));
 	}
 
-    useEffect(() => {
-        console.log("movie", movie);
-    }, []);
     const movieId = movie.id
     const movieTitle = movie.title;
 
@@ -146,7 +140,7 @@ const CreateTask = () => {
     const [important, setImportant] = useState(false);
 
     const [openBackToList, isOpenBackToList] = useState(false);
-    const [openCreateTask, isOpenCreateTask] = useState(false);
+    const [openCreateReview, isOpenCreateReview] = useState(false);
 
     const history = useHistory()
     const handleRedirectToListReviews = () => {
@@ -166,8 +160,8 @@ const CreateTask = () => {
         isOpenBackToList(false);
     };
 
-    const handleCloseCreateTask = () => {
-        isOpenCreateTask(false);
+    const handleCloseCreateReview = () => {
+        isOpenCreateReview(false);
     };
 
     const handleChangeText = (event) => {
@@ -186,6 +180,7 @@ const CreateTask = () => {
     const { register, handleSubmit } = useForm();
     const onSubmit = (values, e) => {
         e.preventDefault();
+
         const payload = {
             ...values
         };
@@ -194,197 +189,183 @@ const CreateTask = () => {
 
         try {
             postReview(movieId, payload);
-            isOpenCreateTask(true);
+            isOpenCreateReview(true);
         } catch (err) {
-            console.log(err);
+            return <Typography>Something went wrong...</Typography>
         }
     }
 
     return (
         <React.Fragment>
             <AppAppBar />
-            <div className="createEntity">
-            <Typography variant="h4" className={classes.title}>Create Review for {movieTitle}</Typography>
-            <RootRef rootRef={domRef}>
-                <form onSubmit={handleSubmit(onSubmit)} autocomplete="off" noValidate>
-                    <FormControl id="textForm" className={classes.formControl}>
-                        <TextField
-                            id="text"
-                            type="text"
-                            multiline
-                            rowsMax={3}
-                            name="text"
-                            value={text}
-                            {...register("text")}
-                            onChange={handleChangeText}
-                            className={classes.textField}
-                            label="text"
-                            placeholder="text"
-                            InputLabelProps={{ shrink: true, }}
-                        />
-                    </FormControl>
+                <div className="createEntity">
+                    <Typography variant="h4" className={classes.title}>Create Review for {movieTitle}</Typography>
+                    <RootRef rootRef={domRef}>
+                        <form onSubmit={handleSubmit(onSubmit)} autocomplete="off" noValidate>
+                            <FormControl id="textForm" className={classes.formControl}>
+                                <TextField
+                                    id="text"
+                                    type="text"
+                                    multiline
+                                    rowsMax={3}
+                                    name="text"
+                                    value={text}
+                                    {...register("text")}
+                                    onChange={handleChangeText}
+                                    className={classes.textField}
+                                    label="text"
+                                    placeholder="text"
+                                    InputLabelProps={{ shrink: true, }}
+                                />
+                            </FormControl>
 
-                    
-                    <FormControl component="fieldset">
-                        <FormGroup aria-label="position" row>
-                            <FormControlLabel
-                                id="important"
-                                className={classes.important}
-                                name="important"
-                                defaultValue={important}
-                                {...register("important")}
-                                control={<Checkbox color="secondary" checked={important} onChange={handleChangeImportant}/>}
-                                label="Important"
-                                labelPlacement="end"
-                            />
-                        </FormGroup>
-                    </FormControl>
+                            
+                            <FormControl component="fieldset">
+                                <FormGroup aria-label="position" row>
+                                    <FormControlLabel
+                                        id="important"
+                                        className={classes.important}
+                                        name="important"
+                                        defaultValue={important}
+                                        {...register("important")}
+                                        control={<Checkbox color="secondary" checked={important} onChange={handleChangeImportant}/>}
+                                        label="Important"
+                                        labelPlacement="end"
+                                    />
+                                </FormGroup>
+                            </FormControl>
 
-                    <Grid container spacing={1}>
-                        <Grid container item xs={12} justify="center">
-                            <Button
-                                id="submitCreateTask"
-                                className="inactive-button"
-                                style={{backgroundColor: "#f5c172"}}
-                                component={SubmitButton}
-                                variant="contained"
-                                color="primary"
-                                size="large"
-                                href="#"
-                            >
-                                Create Review
-                            </Button>
-                            <Backdrop open={openCreateTask} onClose={handleCloseCreateTask} elevation={18}>
-                                <Dialog
-                                    open={openCreateTask}
-                                    TransitionComponent={TransitionCreateTask}
-                                    keepMounted
-                                    aria-describedby="New task created!"
-                                    disableBackdropClick
-                                >
-                                    <DialogContent>
-                                        <DialogContentText id="alertDialogDescriptionNewTask" className={classes.dialogCreateTaskText}>
-                                            New review successfully created!
-                                    </DialogContentText>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Grid container spacing={2}>
-                                            <Grid container item xs={6} justify="center">
-                                                <Button id="alertDialogButtonNewTaskForBacktoList"
-                                                    className={classes.dialogCreateTaskNewTask}
-                                                    onClick={() => {
-                                                        handleReset();
-                                                        handleCloseCreateTask();
-                                                    }}
-                                                    color="primary"
-                                                >
-                                                    New review
-                                                </Button>
-                                            </Grid>
-                                            <Grid container item xs={6} justify="center">
-                                                <Button id="alertDialogButtonBackToListForBackToList"
-                                                    className={classes.dialogCreateTaskBackToList}
-                                                    onClick={handleRedirectToListReviews}
-                                                    color="primary"
-                                                >
-                                                    Back to List
-                                                </Button>
-                                            </Grid>
-                                        </Grid>
-                                    </DialogActions>
-                                </Dialog>
-                            </Backdrop>
-                        </Grid>
+                            <Grid container spacing={1}>
+                                <Grid container item xs={12} justify="center">
+                                    <Button
+                                        id="submitCreateReview"
+                                        className="inactive-button"
+                                        style={{backgroundColor: "#f5c172"}}
+                                        component={SubmitButton}
+                                        variant="contained"
+                                        color="primary"
+                                        size="large"
+                                        href="#"
+                                    >
+                                        Create Review
+                                    </Button>
+                                    <Backdrop open={openCreateReview} onClose={handleCloseCreateReview} elevation={18}>
+                                        <Dialog
+                                            open={openCreateReview}
+                                            TransitionComponent={TransitionCreateReview}
+                                            keepMounted
+                                            aria-describedby="New review created!"
+                                            disableBackdropClick
+                                        >
+                                            <DialogContent>
+                                                <DialogContentText id="alertDialogDescriptionNewReview" className={classes.dialogCreateReviewText}>
+                                                    New review successfully created!
+                                            </DialogContentText>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Grid container spacing={2}>
+                                                    <Grid container item xs={6} justify="center">
+                                                        <Button id="alertDialogButtonNewReviewForBacktoList"
+                                                            className={classes.dialogCreateReviewNewReview}
+                                                            onClick={() => {
+                                                                handleReset();
+                                                                handleCloseCreateReview();
+                                                            }}
+                                                            color="primary"
+                                                        >
+                                                            New review
+                                                        </Button>
+                                                    </Grid>
+                                                    <Grid container item xs={6} justify="center">
+                                                        <Button id="alertDialogButtonBackToListForBackToList"
+                                                            className={classes.dialogCreateReviewBackToList}
+                                                            onClick={handleRedirectToListReviews}
+                                                            color="primary"
+                                                        >
+                                                            Back to List
+                                                        </Button>
+                                                    </Grid>
+                                                </Grid>
+                                            </DialogActions>
+                                        </Dialog>
+                                    </Backdrop>
+                                </Grid>
 
-                        <Grid container item xs={12} justify="center">
-                            <Button
-                                id="alertDialogButtonForCreateTask"
-                                className="reviewbackToList"
-                                style={{backgroundColor: "#f5c172"}}
-                                variant="contained"
-                                color="primary"
-                                size="large"
-                                onClick={() => {
-                                        text !== "" ? handlePopUpBackToList() : handleRedirectToListReviews()
-                                    }
-                                }
-                            >
-                                Back to list
-                        </Button>
-                            <Backdrop open={openBackToList} onClose={handleCloseBackToList} elevation={18}>
-                                <Dialog
-                                    open={openBackToList}
-                                    TransitionComponent={Transition}
-                                    keepMounted
-                                    onClose={handleCloseBackToList}
-                                    aria-labelledby="Confirmation"
-                                    aria-describedby="Do you want to save changes to this document before closing?"
-                                    disableBackdropClick
-                                >
-                                    <DialogContent>
-                                        <DialogContentText id="alertdDialogTitleBackToList" className={classes.dialogBackToListTitle}>
-                                            Confirmation
-                                    </DialogContentText>
-                                        <DialogContentText id="alertDialogDescriptionBackToList" className={classes.dialogBackToListDescription}>
-                                            <p>Do you want to save changes to this document before closing?</p>
-                                            <p>Unsaved changes will be lost.</p>
-                                        </DialogContentText>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Grid container spacing={2}>
-                                            <Grid container item xs={6} justify="center">
-                                                <Button id="alertDialogButtonCancelForCreatTask"
-                                                    className={classes.dialogCancelButton}
-                                                    onClick={handleCloseBackToList}
-                                                    color="primary"
-                                                >
-                                                    Cancel
-                                            </Button>
-                                            </Grid>
-                                            <Grid container item xs={6} justify="center">
-                                                <Button
-                                                    id="alertDialogButtonProceedForCreateTask"
-                                                    className={classes.dialogProceedButton}
-                                                    onClick={handleRedirectToListReviews}
-                                                    color="primary"
-                                                >
-                                                    Proceed
-                                            </Button>
-                                            </Grid>
-                                        </Grid>
-                                    </DialogActions>
-                                </Dialog>
-                            </Backdrop>
-                        </Grid>
-                    </Grid>
-                </form>
-            </RootRef>
-        </div>
+                                <Grid container item xs={12} justify="center">
+                                    <Button
+                                        id="alertDialogButtonForCreateReview"
+                                        className="reviewbackToList"
+                                        style={{backgroundColor: "#f5c172"}}
+                                        variant="contained"
+                                        color="primary"
+                                        size="large"
+                                        onClick={() => {
+                                                text !== "" ? handlePopUpBackToList() : handleRedirectToListReviews()
+                                            }
+                                        }
+                                    >
+                                        Back to list
+                                </Button>
+                                    <Backdrop open={openBackToList} onClose={handleCloseBackToList} elevation={18}>
+                                        <Dialog
+                                            open={openBackToList}
+                                            TransitionComponent={Transition}
+                                            keepMounted
+                                            onClose={handleCloseBackToList}
+                                            aria-labelledby="Confirmation"
+                                            aria-describedby="Do you want to save changes to this document before closing?"
+                                            disableBackdropClick
+                                        >
+                                            <DialogContent>
+                                                <DialogContentText id="alertdDialogTitleBackToList" className={classes.dialogBackToListTitle}>
+                                                    Confirmation
+                                            </DialogContentText>
+                                                <DialogContentText id="alertDialogDescriptionBackToList" className={classes.dialogBackToListDescription}>
+                                                    <p>Do you want to save changes to this document before closing?</p>
+                                                    <p>Unsaved changes will be lost.</p>
+                                                </DialogContentText>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Grid container spacing={2}>
+                                                    <Grid container item xs={6} justify="center">
+                                                        <Button id="alertDialogButtonCancelForCreatReview"
+                                                            className={classes.dialogCancelButton}
+                                                            onClick={handleCloseBackToList}
+                                                            color="primary"
+                                                        >
+                                                            Cancel
+                                                    </Button>
+                                                    </Grid>
+                                                    <Grid container item xs={6} justify="center">
+                                                        <Button
+                                                            id="alertDialogButtonProceedForCreateReview"
+                                                            className={classes.dialogProceedButton}
+                                                            onClick={handleRedirectToListReviews}
+                                                            color="primary"
+                                                        >
+                                                            Proceed
+                                                    </Button>
+                                                    </Grid>
+                                                </Grid>
+                                            </DialogActions>
+                                        </Dialog>
+                                    </Backdrop>
+                                </Grid>
+                            </Grid>
+                        </form>
+                    </RootRef>
+                </div>
             <AppFooter />
         </React.Fragment>
     );
 }
 
-function formatDate(dateString) {
-    if (dateString === "") {
-        return dateString;
-    };
-
-    const dateArray = dateString.split("/");
-    const [day, month, year] = dateArray;
-    const newDate = new Date(year, month - 1, day);
-
-    const moment = require('moment');
-    const newDateFormat = moment(newDate).format('YYYY-MM-DD');
-    return newDateFormat;
-};
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TransitionCreateTask = React.forwardRef(function Transition(props, ref) {
+const TransitionCreateReview = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default withRoot(CreateTask);
+export default withRoot(CreateReview);
